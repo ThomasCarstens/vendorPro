@@ -7,17 +7,17 @@ const InscriptionScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Inscription</Text>
-      {isValidated && (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('AjoutFormation')}
-        >
-          <Text style={styles.buttonText}>Créer une formation</Text>
-        </TouchableOpacity>
-      )}
+      <Text style={styles.title}>instructions...</Text>
       <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('RechercheFormations')}
+        style={styles.buttonGreyed}
+        // onPress={() => navigation.navigate('AjoutFormation')}
+      >
+        <Text style={styles.buttonText}>Créer une formation</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.buttonGreyed}
+        // onPress={() => navigation.navigate('RechercheFormations')}
       >
         <Text style={styles.buttonText}>Recherche formations</Text>
       </TouchableOpacity>
@@ -33,6 +33,14 @@ const InscriptionScreen = ({ navigation, route }) => {
       >
         <Text style={styles.buttonText}>Activer mes Notifications</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Login')}
+      >
+        <Text style={styles.buttonText}>Se déconnecter</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
@@ -48,6 +56,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  buttonGreyed: {
+    backgroundColor: 'grey',
+    padding: 15,
+    borderRadius: 5,
+    marginVertical: 10,
+    width: '100%',
   },
   button: {
     backgroundColor: '#007AFF',

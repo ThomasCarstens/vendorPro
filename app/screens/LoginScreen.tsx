@@ -7,6 +7,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = () => {
     // Implement your login logic here
+    // in login button: onPress={handleLogin} 
     console.log('Login attempt with:', email, password);
   };
 
@@ -26,7 +27,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Login" onPress={() => navigation.navigate('Signup')} />    
       <Button title="Sign Up" onPress={() => navigation.navigate('Signup')} />
       <Button title="Reset Password" onPress={() => navigation.navigate('PasswordReset')} />
       <Button title="Background Info" onPress={() => navigation.navigate('BackgroundInfo')} />
