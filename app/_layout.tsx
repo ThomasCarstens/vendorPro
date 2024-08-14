@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import Ionicons from '@expo/vector-icons/Ionicons'; //https://ionic.io/ionicons/v4
 // Import your screen components
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -23,8 +23,24 @@ const Tab = createBottomTabNavigator();
 
 function NewUserTabs() {
   return (
-    <Tab.Navigator >
-      <Tab.Screen name="Inscription" component={InscriptionScreen} />
+    <Tab.Navigator screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'Inscription') {
+          iconName = focused ? 'add-circle' : 'add-circle';
+        } else if (route.name === 'Notifs') {
+          iconName = focused ? 'add-circle' : 'add-circle';
+        } else if (route.name === 'Profil') {
+          iconName = focused ? 'add-circle' : 'add-circle';
+        }
+        // You can return any component that you like here!
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+      tabBarActiveTintColor: 'tomato',
+      tabBarInactiveTintColor: '#1eaae6',
+    })}>
+      <Tab.Screen name="Inscription" component={InscriptionScreen}  />
       <Tab.Screen name="Notifs" component={NotifsScreen} />
       <Tab.Screen name="Profil" component={ProfilScreen} />
     </Tab.Navigator>
@@ -45,7 +61,7 @@ function UserTabs() {
 function AdminTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="DemandesFormations" component={DemandesFormationsScreen} />
+      <Tab.Screen name="DemandesFormations" component={DemandesFormationsScreen} options={{ tabBarIcon: '', tabBarBadge: 3 }} />
       <Tab.Screen name="Notifications" component={NotifsScreen} />
       <Tab.Screen name="DemandesProfils" component={DemandesProfilsScreen} />
     </Tab.Navigator>
@@ -55,7 +71,7 @@ function AdminTabs() {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isValidated, setIsValidated] = useState(true);
+  const [isValidated, setIsValidated] = useState(false);
 
   return (
     <NavigationContainer independent={true}>

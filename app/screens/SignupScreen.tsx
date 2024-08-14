@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+// import { auth, firebase } from '../firebase'
+import { browserLocalPersistence, browserSessionPersistence, 
+  getReactNativePersistence, createUserWithEmailAndPassword, 
+  setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
 
 const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -13,6 +17,13 @@ const SignupScreen = ({ navigation }) => {
   const handleSignup = () => {
     // Implement your signup logic here
     console.log('Signup attempt with:', { name, email, password, domain, practice });
+    // createUserWithEmailAndPassword(auth, email, password)
+    // .then(userCredentials => {
+    //     const user = userCredentials.user;
+    //     console.log('Registered with: ', user.email);
+    
+    // }).catch(error => alert(error.message))
+
   };
 
   return (

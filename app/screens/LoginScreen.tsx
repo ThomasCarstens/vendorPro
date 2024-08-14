@@ -4,11 +4,21 @@ import { View, TextInput, Button, StyleSheet } from 'react-native';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const toast = useRef(null);
+
+  const [gameFile, setGameFile] = useState()
+  // const userLoggedIn = (auth.currentUser)
+
+  // if (userLoggedIn !== null){
+  //   navigation.replace("Selection", {gameFile: gameFile})
+  //   return
+  // }
 
   const handleLogin = () => {
     // Implement your login logic here
     // in login button: onPress={handleLogin} 
     console.log('Login attempt with:', email, password);
+    
   };
 
   return (
@@ -27,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Login" onPress={() => navigation.navigate('Signup')} />    
+      <Button title="Login" onPress={() => handleLogin} />    
       <Button title="Sign Up" onPress={() => navigation.navigate('Signup')} />
       <Button title="Reset Password" onPress={() => navigation.navigate('PasswordReset')} />
       <Button title="Background Info" onPress={() => navigation.navigate('BackgroundInfo')} />
