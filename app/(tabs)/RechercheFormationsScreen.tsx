@@ -25,6 +25,7 @@ const RechercheFormationsScreen = ( props, { route } ) => {
   const [isFormateur, setIsFormateur] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
+
   const navigation = useNavigation();
   // Roles updated, edit page based on this.
   React.useEffect(() => {
@@ -54,7 +55,7 @@ const RechercheFormationsScreen = ( props, { route } ) => {
   const renderFormationItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.formationItem} 
-      onPress={() => navigation.navigate('UnderConstruction', { formationId: item.id })}
+      onPress={() => navigation.navigate('Formation', { formationId: item.id })}
     >
       <Image source={{ uri: item.image }} style={styles.formationImage} />
       <Text style={styles.formationTitle}>{item.title}</Text>

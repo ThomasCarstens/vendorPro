@@ -1,26 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { browserLocalPersistence, browserSessionPersistence, getReactNativePersistence, createUserWithEmailAndPassword, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
-import { auth, firebase } from '../../firebase'
+import { auth, firebase, storage, database } from '../../firebase'
 import { StackActions } from '@react-navigation/native';
+import { ref as ref_d, set, get, onValue } from 'firebase/database'
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(auth.currentUser);
-  
-  
-  // {!isLoggedIn ? () : isAdmin ? () : !isValidated ? () : ()
-  const handleAutomaticLogin = () => {
-    if (isLoggedIn!=null){
-    console.log('isLoggedIn: ', isLoggedIn.email)
-    {isLoggedIn? navigation.navigate('UserTabs', {isFormateur: 'true', isValidated:'true'}):(null)}
-    }
-  }
+  const [gameFileContext, setGameFile] =useState({});
+  // In case user already logged in - else same in Login component.
+  React.useMemo(()=>{
+    const userLoggedIn = (auth.currentUser)
+    // console.log(userLoggedIn.uid)  
+    if (userLoggedIn !== null) {
+      // User Roles loaded from Firebase Realtime Database.
+      const gameFileRef = ref_d(database, "userdata/"+String(userLoggedIn.uid) );
 
-  useEffect(()=>{
-    handleAutomaticLogin()
-  })
+      onValue(gameFileRef, (snapshot) =>  {
+            const data = snapshot.val();
+            if (data){
+              console.log('Userdata downloaded in Login.js'+ data.isFormateur)
+              setGameFile(data)
+            }
+          })
+
+      // Automatic login: if there is a current user, based on id.
+      // if (userLoggedIn !== null){
+      //   navigation.replace("Selection", {gameFile: gameFile})
+      //   return
+      // }
+    }
+    
+      }, [])
+
+
+  // {!isLoggedIn ? () : isAdmin ? () : !isValidated ? () : ()
+  // const handleAutomaticLogin = () => {
+  //   if (isLoggedIn!=null){
+  //   console.log('isLoggedIn: ', isLoggedIn.email)
+  //   {isLoggedIn? navigation.navigate('UserTabs', {isFormateur: 'true', isValidated:'true'}):(null)}
+  //   }
+  // }
+
+  // useEffect(()=>{
+  //   handleAutomaticLogin()
+  // })
     // navigation.navigate('UserTabs', {role: 'formateur', validated:'true'})}
 
   // How to reset programmatically?

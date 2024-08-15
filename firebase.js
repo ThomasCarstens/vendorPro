@@ -30,7 +30,8 @@ const firebaseConfig = {
   storageBucket: "appdolivier.appspot.com",
   messagingSenderId: "349759213253",
   appId: "1:349759213253:web:b973f229c611c64a756aac",
-  measurementId: "G-YTQQ4TDLMF"
+  measurementId: "G-YTQQ4TDLMF",
+  databaseURL: 'https://appdolivier-default-rtdb.europe-west1.firebasedatabase.app'
 };
 
 
@@ -48,9 +49,12 @@ const analytics = getAnalytics(app);
 // }
 
 // const auth = getAuth(app); // Deactivated to have session-persistent auth.
+
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
+
+
 
 // const auth = firebase.auth()
 const storage = getStorage(app);

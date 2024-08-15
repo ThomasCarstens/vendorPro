@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Switch, Alert } from 'react-native';
+import { View, Text, StyleSheet, Switch, Alert, TouchableOpacity } from 'react-native';
 
 const NotifsScreen = () => {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
@@ -44,6 +44,14 @@ const NotifsScreen = () => {
       <Text style={styles.description}>
         Activez les notifications pour recevoir des mises à jour sur les nouvelles formations et les événements importants.
       </Text>
+
+
+      <TouchableOpacity 
+            style={styles.notifButton}
+            // onPress={() => /*Send Notification to.... */}
+          >
+            <Text style={styles.notifButtonText}>Test</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -70,6 +78,20 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: 'gray',
+  },
+  notifButton: {
+    backgroundColor: '#4CAF50',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  notifButtonText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
 

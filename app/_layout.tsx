@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Image, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { auth, firebase, storage, database } from '../firebase'
+import { ref as ref_d, set, get, onValue } from 'firebase/database'
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -20,6 +22,7 @@ import AjoutFormationScreen from './screens/AjoutFormationScreen';
 import DemandesFormationsScreen from './(tabs)/DemandesFormationsScreen';
 import DemandesProfilsScreen from './(tabs)/DemandesProfilsScreen';
 import UnderConstructionScreen from './screens/UnderConstructionScreen';
+import FormationScreen from './screens/FormationScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,9 +54,6 @@ function NewUserTabs() {
   );
 }
 
-
-
-
 function AdminTabs() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
@@ -82,10 +82,36 @@ function AdminTabs() {
 
 function App() {
   const [gameFileContext, setGameFile] =   React.useState({"isFormateur":"true", "isValidated":"true"})
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // In case user already logged in - else same in Login component.
+  React.useMemo(()=>{
+    const userLoggedIn = (auth.currentUser)
+    // console.log(userLoggedIn.uid)  
+    if (userLoggedIn !== null) {
+      // User Roles loaded from Firebase Realtime Database.
+      const gameFileRef = ref_d(database, "userdata/"+String(userLoggedIn.uid) );
+
+      onValue(gameFileRef, (snapshot) =>  {
+            const data = snapshot.val();
+            if (data){
+              console.log('Userdata downloaded in App.js'+ data)
+              setGameFile(data)
+            }
+          })
+
+      // Automatic login: if there is a current user, based on id.
+      // if (userLoggedIn !== null){
+      //   navigation.replace("Selection", {gameFile: gameFile})
+      //   return
+      // }
+    }
+    
+      }, [])
+
 
   
   function UserTabs() {
@@ -134,17 +160,20 @@ function App() {
         <Stack.Screen name="BackgroundInfo" component={BackgroundInfoScreen} />
 
 
-        <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }} />
+        
         <Stack.Screen name="AjoutFormation"       component={AjoutFormationScreen} />
+        <Stack.Screen name="Formation"       component={FormationScreen} />
         <Stack.Screen name="RechercheFormations"  component={RechercheFormationsScreen} />
 
+        {/* tabs if admin */}
+        <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }} />
 
+        {/* tabs if not validated */}
         <Stack.Screen name="NewUserTabs" component={NewUserTabs} options={{ headerShown: false }} />
 
-
+        {/* tabs if validated */}
         <Stack.Screen name="UserTabs" component={UserTabs} options={{ headerShown: false }}  />
-        {/* <Stack.Screen name="AjoutFormation" component={AjoutFormationScreen} />
-        <Stack.Screen name="RechercheFormations" component={RechercheFormationsScreen} /> */}
+
         
 
         <Stack.Screen name="UnderConstruction" component={UnderConstructionScreen} />
