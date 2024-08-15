@@ -15,13 +15,22 @@ const MOCK_FORMATIONS = [
   { id: '10', 'title': 'Anesthésiologie avancée', date: '2025-02-01', image: 'https://via.placeholder.com/150', keywords: ['postgrad'], price: 160, category: 'Anesthésiologie', lieu: 'Montpellier', niveau: 'Avancé' },
 ];
 
-const RechercheFormationsScreen = ({ navigation, route }) => {
+const RechercheFormationsScreen = ( props, { navigation, route } ) => {
   const [formations, setFormations] = useState(MOCK_FORMATIONS);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [lieuFilter, setLieuFilter] = useState('');
   const [niveauFilter, setNiveauFilter] = useState('');
+  const [isFormateur, setIsFormateur] = useState(false);
+  React.useEffect(() => {
+    if (props.route.params.gameFileContext.isFormateur) {
+      // Post updated, do something with `route.params.post`
+      // For example, send the post to the server
+      // const isFormateur = route.params?.gameFileContext.isFormateur;
+      setIsFormateur(props.route.params?.gameFileContext.isFormateur)
+      console.log('isFormateur:', props.route.params.gameFileContext.isFormateur)
+    }
+  }, [props.route.params.gameFileContext.isFormateur]);
   
-  const isFormateur = true; //route.params?.isFormateur || false;
 
   const applyFilters = () => {
     let filteredFormations = MOCK_FORMATIONS;
@@ -58,6 +67,11 @@ const RechercheFormationsScreen = ({ navigation, route }) => {
     <View style={styles.container}>
 
       <View style={styles.filtersContainer}>
+          <TouchableOpacity
+            style={styles.newFormationButton}
+            onPress={() => navigation.navigate('Login')}
+          ><Text style={styles.newFormationButtonText}>Login</Text>
+          </TouchableOpacity>
         {isFormateur && (
           <TouchableOpacity 
             style={styles.newFormationButton}

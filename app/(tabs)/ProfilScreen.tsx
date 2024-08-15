@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { StackActions } from '@react-navigation/native';
+import { auth, firebase } from '../../firebase'
 
-const ProfilScreen = () => {
+const ProfilScreen = ({ navigation }) => {
   const [name, setName] = useState('Dr. John Doe');
   const [domain, setDomain] = useState('Cardiologie');
   const [practice, setPractice] = useState('hopital');
   const [isEditing, setIsEditing] = useState(false);
+
+  const handleLogout = async () => {
+    // await AsyncStorage.clear()
+      auth
+        .signOut()
+        .then(()=> {
+            console.log('Users are not signing out')
+            navigation.dispatch(StackActions.popToTop());
+        })
+  }
 
   const handleSave = () => {
     // In a real app, you would save the changes to a backend here
@@ -76,6 +88,7 @@ const ProfilScreen = () => {
           {isEditing ? 'Enregistrer les modifications' : 'Modifier le profil'}
         </Text>
       </TouchableOpacity>
+      <Button title="Logout" onPress={handleLogout} />  
     </ScrollView>
   );
 };

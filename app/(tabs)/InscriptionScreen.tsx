@@ -36,7 +36,7 @@ const InscriptionScreen = ({ navigation, route }) => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => handleLogout}
       >
         <Text style={styles.buttonText}>Se déconnecter</Text>
       </TouchableOpacity>

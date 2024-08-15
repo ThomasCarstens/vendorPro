@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Image, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons'; //https://ionic.io/ionicons/v4
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // Import your screen components
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -48,15 +52,7 @@ function NewUserTabs() {
 }
 
 
-function UserTabs() {
-  return (
-    <Tab.Navigator >
-      <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} />
-      <Tab.Screen name="Notifs" component={NotifsScreen} />
-      <Tab.Screen name="Profil" component={ProfilScreen} />
-    </Tab.Navigator>
-  );
-}
+
 
 function AdminTabs() {
   return (
@@ -69,40 +65,56 @@ function AdminTabs() {
 }
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [gameFileContext, setGameFile] =   React.useState({"isFormateur":"true", "isValidated":"true"})
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  
+  function UserTabs() {
+    return (
+      <Tab.Navigator >
+        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        <Tab.Screen name="Notifs" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+      </Tab.Navigator>
+    );
+  }
+  // useEffect(()=>{   
+  //   setGameFile({"isFormateur":"true"})
+  // }, [])
+  // onValue(gameFileRef, (snapshot) =>  {
+  //   const data = snapshot.val();
+  //   if (data){
+  //     console.log('Gamefile downloaded in App.js')
+  //     setGameFile(data)
+  //   } 
+  // })
 
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator>
-        {!isLoggedIn ? (
-          <>
 
-            <Stack.Screen name="Signup" component={SignupScreen} />
-            <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
-            <Stack.Screen name="BackgroundInfo" component={BackgroundInfoScreen} />
-          </>
-        ) : isAdmin ? (
-          <>
+        <Stack.Screen name="Login"          component={LoginScreen} options={{headerShown: false}} initialParams={{"gameFileContext": gameFileContext}}  />
+        <Stack.Screen name="Signup"         component={SignupScreen} />
+        <Stack.Screen name="PasswordReset"  component={PasswordResetScreen} />
+        <Stack.Screen name="BackgroundInfo" component={BackgroundInfoScreen} />
 
-            <Stack.Screen name="AdminTabs" component={AdminTabs} options={{ headerShown: false }} />
-            <Stack.Screen name="AjoutFormation" component={AjoutFormationScreen} />
-            <Stack.Screen name="RechercheFormations" component={RechercheFormationsScreen} />
-          </>
-        ) : !isValidated ? (
-          <>
 
-          <Stack.Screen name="NewUserTabs" component={NewUserTabs} options={{ headerShown: false }} />
-          </>
-        ) : (
-          <>
+        <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="AjoutFormation"       component={AjoutFormationScreen} />
+        <Stack.Screen name="RechercheFormations"  component={RechercheFormationsScreen} />
 
-            <Stack.Screen name="UserTabs" component={UserTabs} options={{ headerShown: false }} />
-            <Stack.Screen name="AjoutFormation" component={AjoutFormationScreen} />
-            <Stack.Screen name="RechercheFormations" component={RechercheFormationsScreen} />
-          </>
-        )}
+
+        <Stack.Screen name="NewUserTabs" component={NewUserTabs} options={{ headerShown: false }} />
+
+
+        <Stack.Screen name="UserTabs" component={UserTabs} options={{ headerShown: false }}  />
+        {/* <Stack.Screen name="AjoutFormation" component={AjoutFormationScreen} />
+        <Stack.Screen name="RechercheFormations" component={RechercheFormationsScreen} /> */}
+        
+
         <Stack.Screen name="UnderConstruction" component={UnderConstructionScreen} />
       </Stack.Navigator>
     </NavigationContainer>
