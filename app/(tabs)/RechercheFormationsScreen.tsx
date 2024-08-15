@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 
 const MOCK_FORMATIONS = [
   { id: '1', 'title': 'Cardiologie avancée', date: '2024-09-15', image: 'https://via.placeholder.com/150', keywords: ['conseillé 3e année', 'postgrad'], price: 120, category: 'Médecine', lieu: 'Paris', niveau: 'Avancé' },
@@ -15,18 +16,22 @@ const MOCK_FORMATIONS = [
   { id: '10', 'title': 'Anesthésiologie avancée', date: '2025-02-01', image: 'https://via.placeholder.com/150', keywords: ['postgrad'], price: 160, category: 'Anesthésiologie', lieu: 'Montpellier', niveau: 'Avancé' },
 ];
 
-const RechercheFormationsScreen = ( props, { navigation, route } ) => {
+const RechercheFormationsScreen = ( props, { route } ) => {
   const [formations, setFormations] = useState(MOCK_FORMATIONS);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [lieuFilter, setLieuFilter] = useState('');
   const [niveauFilter, setNiveauFilter] = useState('');
+
   const [isFormateur, setIsFormateur] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isValidated, setIsValidated] = useState(false);
+  const navigation = useNavigation();
+  // Roles updated, edit page based on this.
   React.useEffect(() => {
-    if (props.route.params.gameFileContext.isFormateur) {
-      // Post updated, do something with `route.params.post`
-      // For example, send the post to the server
-      // const isFormateur = route.params?.gameFileContext.isFormateur;
+    if (props.route.params.gameFileContext.isFormateur) {      
       setIsFormateur(props.route.params?.gameFileContext.isFormateur)
+      setIsAdmin(props.route.params?.gameFileContext.isAdmin)
+      setIsValidated(props.route.params?.gameFileContext.isValidated)
       console.log('isFormateur:', props.route.params.gameFileContext.isFormateur)
     }
   }, [props.route.params.gameFileContext.isFormateur]);
@@ -49,7 +54,7 @@ const RechercheFormationsScreen = ( props, { navigation, route } ) => {
   const renderFormationItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.formationItem} 
-      onPress={() => navigation.navigate('FormationScreen', { formationId: item.id })}
+      onPress={() => navigation.navigate('UnderConstruction', { formationId: item.id })}
     >
       <Image source={{ uri: item.image }} style={styles.formationImage} />
       <Text style={styles.formationTitle}>{item.title}</Text>
@@ -65,58 +70,58 @@ const RechercheFormationsScreen = ( props, { navigation, route } ) => {
 
   return (
     <View style={styles.container}>
-
       <View style={styles.filtersContainer}>
-          <TouchableOpacity
-            style={styles.newFormationButton}
-            onPress={() => navigation.navigate('Login')}
-          ><Text style={styles.newFormationButtonText}>Login</Text>
-          </TouchableOpacity>
+        <View style={styles.pickersContainer}>
+          <Picker
+            selectedValue={categoryFilter}
+            style={styles.picker}
+            onValueChange={(itemValue) => setCategoryFilter(itemValue)}
+          >
+            <Picker.Item label="Toute Catégorie" value="" />
+            <Picker.Item label="Médecine" value="Médecine" />
+            <Picker.Item label="Chirurgie" value="Chirurgie" />
+            <Picker.Item label="Psychiatrie" value="Psychiatrie" />
+            {/* Add more categories as needed */}
+          </Picker>
+          <Picker
+            selectedValue={lieuFilter}
+            style={styles.picker}
+            onValueChange={(itemValue) => setLieuFilter(itemValue)}
+          >
+            <Picker.Item label="Tout Lieu" value="" />
+            <Picker.Item label="Paris" value="Paris" />
+            <Picker.Item label="Lyon" value="Lyon" />
+            <Picker.Item label="Marseille" value="Marseille" />
+            {/* Add more locations as needed */}
+          </Picker>
+          <Picker
+            selectedValue={niveauFilter}
+            style={styles.picker}
+            onValueChange={(itemValue) => setNiveauFilter(itemValue)}
+          >
+            <Picker.Item label="Tout Niveau" value="" />
+            <Picker.Item label="Débutant" value="Débutant" />
+            <Picker.Item label="Intermédiaire" value="Intermédiaire" />
+            <Picker.Item label="Avancé" value="Avancé" />
+          </Picker>
+        </View>
+
         {isFormateur && (
           <TouchableOpacity 
             style={styles.newFormationButton}
             onPress={() => navigation.navigate('AjoutFormation')}
           >
-            <Text style={styles.newFormationButtonText}>Nouvelle Formation</Text>
+            <Text style={styles.newFormationButtonText}>+</Text>
           </TouchableOpacity>
         )}
-        <Picker
-          selectedValue={categoryFilter}
-          style={styles.picker}
-          onValueChange={(itemValue) => setCategoryFilter(itemValue)}
-        >
-          <Picker.Item label="Toute Catégorie" value="" />
-          <Picker.Item label="Médecine" value="Médecine" />
-          <Picker.Item label="Chirurgie" value="Chirurgie" />
-          <Picker.Item label="Psychiatrie" value="Psychiatrie" />
-          {/* Add more categories as needed */}
-        </Picker>
-        <Picker
-          selectedValue={lieuFilter}
-          style={styles.picker}
-          onValueChange={(itemValue) => setLieuFilter(itemValue)}
-        >
-          <Picker.Item label="Tout Lieu" value="" />
-          <Picker.Item label="Paris" value="Paris" />
-          <Picker.Item label="Lyon" value="Lyon" />
-          <Picker.Item label="Marseille" value="Marseille" />
-          {/* Add more locations as needed */}
-        </Picker>
-        <Picker
-          selectedValue={niveauFilter}
-          style={styles.picker}
-          onValueChange={(itemValue) => setNiveauFilter(itemValue)}
-        >
-          <Picker.Item label="Tout Niveau" value="" />
-          <Picker.Item label="Débutant" value="Débutant" />
-          <Picker.Item label="Intermédiaire" value="Intermédiaire" />
-          <Picker.Item label="Avancé" value="Avancé" />
-        </Picker>
 
-        <TouchableOpacity style={styles.filterButton} onPress={applyFilters}>
-          <Text style={styles.filterButtonText}>Appliquer les filtres</Text>
-        </TouchableOpacity>
+
+
       </View>
+      
+      <TouchableOpacity style={styles.filterButton} onPress={applyFilters}>
+        <Text style={styles.filterButtonText}>Appliquer les filtres</Text>
+      </TouchableOpacity>
       
       <FlatList
         data={formations}
@@ -124,8 +129,6 @@ const RechercheFormationsScreen = ( props, { navigation, route } ) => {
         keyExtractor={item => item.id}
         style={styles.list}
       />
-      
-
     </View>
   );
 };
@@ -136,20 +139,23 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   filtersContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
   },
+  pickersContainer: {
+    flex: 1,
+  },
   picker: {
-    height: 30,
-    width: 200,
+    height: 40,
+    marginBottom: 5,
   },
   filterButton: {
-    marginTop: 10,
-    marginBottom:10,
     backgroundColor: 'black',
     padding: 10,
     borderRadius: 100,
+    marginBottom: 10,
   },
   filterButtonText: {
     color: 'white',
@@ -158,18 +164,21 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
   },
-  formationItem: {
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
+  newFormationButton: {
+    backgroundColor: '#4CAF50',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
   },
-  formationImage: {
-    width: '100%',
-    height: 150,
-    marginBottom: 10,
-    borderRadius: 5,
+  newFormationButtonText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
+
   formationTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -187,16 +196,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderRadius: 3,
   },
-  newFormationButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
+  
+    formationItem: {
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: '#f0f0f0',
     borderRadius: 5,
-    margin: 10,
   },
-  newFormationButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 16,
+  formationImage: {
+    width: '100%',
+    height: 150,
+    marginBottom: 10,
+    borderRadius: 5,
   },
 });
 

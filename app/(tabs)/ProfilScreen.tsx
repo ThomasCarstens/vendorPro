@@ -89,6 +89,11 @@ const ProfilScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
       <Button title="Logout" onPress={handleLogout} />  
+      <TouchableOpacity
+            style={styles.newFormationButton}
+            onPress={() => navigation.navigate('Login')}
+          ><Text style={styles.newFormationButtonText}>Login</Text>
+          </TouchableOpacity>
     </ScrollView>
   );
 };

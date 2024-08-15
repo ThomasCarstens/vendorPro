@@ -56,7 +56,23 @@ function NewUserTabs() {
 
 function AdminTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'DemandesFormations') {
+          iconName = focused ? 'add-circle' : 'add-circle';
+        } else if (route.name === 'Notifications') {
+          iconName = focused ? 'add-circle' : 'add-circle';
+        } else if (route.name === 'DemandesProfils') {
+          iconName = focused ? 'add-circle' : 'add-circle';
+        }
+        // You can return any component that you like here!
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+      tabBarActiveTintColor: 'tomato',
+      tabBarInactiveTintColor: '#1eaae6',
+    })}>
       <Tab.Screen name="DemandesFormations" component={DemandesFormationsScreen} options={{ tabBarIcon: '', tabBarBadge: 3 }} />
       <Tab.Screen name="Notifications" component={NotifsScreen} />
       <Tab.Screen name="DemandesProfils" component={DemandesProfilsScreen} />
@@ -74,7 +90,23 @@ function App() {
   
   function UserTabs() {
     return (
-      <Tab.Navigator >
+      <Tab.Navigator screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+  
+          if (route.name === 'RechercheFormations') {
+            iconName = focused ? 'add-circle' : 'add-circle';
+          } else if (route.name === 'Notifs') {
+            iconName = focused ? 'add-circle' : 'add-circle';
+          } else if (route.name === 'Profil') {
+            iconName = focused ? 'add-circle' : 'add-circle';
+          }
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: '#1eaae6',
+      })}>
         <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
         <Tab.Screen name="Notifs" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
         <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/>
