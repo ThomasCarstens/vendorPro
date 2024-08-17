@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { auth, firebase, storage, database } from '../../firebase'
+import { ref as ref_d, set, get, onValue } from 'firebase/database'
+
 import { Text, View, Button, Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -11,6 +14,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+
 
 async function sendPushNotification(expoPushToken: string) {
   const message = {
@@ -31,6 +35,12 @@ async function sendPushNotification(expoPushToken: string) {
     body: JSON.stringify(message),
   });
 }
+
+
+
+
+
+
 
 function handleRegistrationError(errorMessage: string) {
   alert(errorMessage);
@@ -70,12 +80,15 @@ async function registerForPushNotificationsAsync() {
         })
       ).data;
       console.log(pushTokenString);
+      set(ref_d(database, `userdata/${auth.currentUser.uid}/notifications/`), {
+        token: pushTokenString
+      })    
       return pushTokenString;
     } catch (e: unknown) {
       handleRegistrationError(`${e}`);
     }
-  } else {
-    handleRegistrationError('Must use physical device for push notifications');
+  } else { 
+    handleRegistrationError('Must use physical device for push notifications');  
   }
 }
 
@@ -86,7 +99,8 @@ export default function App() {
   );
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
-
+  const [pushTokenList, setPushTokenList] = useState([]);
+  
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then(token => setExpoPushToken(token ?? ''))
@@ -108,6 +122,68 @@ export default function App() {
     };
   }, []);
 
+  async function getListTargetUsers(isValidated: boolean, isFormateur: boolean, isAdmin: boolean) {
+
+    const userDataRef = ref_d(database, "/userdata/" );
+
+    onValue(userDataRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data){
+              console.log('Checking users.')
+              console.log(data["UKpwHEnNP6enoIhI4lhBpIdoEfR2"])              
+              // setGameFile(data)
+              for (let uid of Object.keys(data)) { 
+              // console.log(uid)
+              let role = data[uid]["role"]
+              try {
+                  console.log('user role AVF: ', Boolean(role["isAdmin"]), Boolean(role["isValidated"]), Boolean(role["isFormateur"]))
+                  // go through each data.uid.role and get a,v,f
+                  if ((Boolean(role["isAdmin"]) != isAdmin)||(Boolean(role["isValidated"]) != isValidated)||(Boolean(role["isFormateur"]) != isFormateur)) {//, isValidated, isFormateur
+                    console.log(isAdmin, isValidated, isFormateur)
+                    break
+                  }
+           
+                  // if a,v,f === isA,isV,isF then get data.uid.notifications.token
+                  let userToken = data[uid]["notifications"]["token"]
+                  // add it to list
+                  setPushTokenList(previous => {
+                    let pushTokens = [...previous]
+                    pushTokens.push(userToken)
+                    return pushTokens
+                  })
+
+              } catch (error) {
+                  console.log('ROLE PARSING ERROR: ', error);
+              }
+
+          }
+          
+        }})
+      }
+  async function sendGroupPushNotification(isValidated: boolean, isFormateur: boolean, isAdmin: boolean) {
+
+    for (let pushToken of await pushTokenList) { 
+      const message = {
+        to: pushToken,
+        sound: 'default',
+        title: 'Original Title',
+        body: 'And here is the body!',
+        data: { someData: 'goes here' },
+      };
+  
+      await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+    }
+    
+  }
+  
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
       <Text>Your Expo push token: {expoPushToken}</Text>
@@ -117,9 +193,23 @@ export default function App() {
         <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
       </View>
       <Button
-        title="Press to Send Notification"
+        title="Press to Send Self Notification"
         onPress={async () => {
           await sendPushNotification(expoPushToken);
+        }}
+      />
+
+      <Button
+        title="Press to Collect Tokens"
+        onPress={async () => {
+          await getListTargetUsers(true, true, false)
+        }}
+      />
+
+      <Button
+        title="Press to Send Group Notifications"
+        onPress={async () => {
+          await sendGroupPushNotification(pushTokenList)
         }}
       />
     </View>
