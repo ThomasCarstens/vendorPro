@@ -16,6 +16,17 @@ const MOCK_FORMATIONS = [
   { id: '10', 'title': 'Anesthésiologie avancée', date: '2025-02-01', image: 'https://via.placeholder.com/150', keywords: ['postgrad'], price: 160, category: 'Anesthésiologie', lieu: 'Montpellier', niveau: 'Avancé' },
 ];
 
+// setParams({
+//   friends:
+//     route.params.friends[0] === 'Brent'
+//       ? ['Wojciech', 'Szymon', 'Jakub']
+//       : ['Brent', 'Satya', 'Michaś'],
+//   title:
+//     route.params.title === "Brent's Profile"
+//       ? "Lucy's Profile"
+//       : "Brent's Profile",
+// })
+
 const RechercheFormationsScreen = ( props, { route } ) => {
   const [formations, setFormations] = useState(MOCK_FORMATIONS);
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -24,19 +35,38 @@ const RechercheFormationsScreen = ( props, { route } ) => {
 
   const [isFormateur, setIsFormateur] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isValidated, setIsValidated] = useState(false);
+  const [isValidated, setIsValidated] = useState(true);
 
   const navigation = useNavigation();
   // Roles updated, edit page based on this.
-  React.useEffect(() => {
+  React.useEffect(() => {      
+    console.log('--')
+
     if (props.route.params.gameFileContext.isFormateur) {      
       setIsFormateur(props.route.params?.gameFileContext.isFormateur)
-      setIsAdmin(props.route.params?.gameFileContext.isAdmin)
-      setIsValidated(props.route.params?.gameFileContext.isValidated)
-      console.log('isFormateur:', props.route.params.gameFileContext.isFormateur)
+      console.log('check isFormateur:', props.route.params?.gameFileContext.isFormateur)
     }
-  }, [props.route.params.gameFileContext.isFormateur]);
+    // if (props.route.params.gameFileContext.isAdmin !== null) {      
+    //   setIsAdmin(props.route.params?.gameFileContext.isAdmin)
+    //   console.log('isAdmin:', props.route.params.gameFileContext.isAdmin)
+    // }
+    // if (props.route.params.gameFileContext.isValidated) {      
+    //   setIsValidated(props.route.params?.gameFileContext.isValidated)
+    //   console.log('check isValidated:', props.route.params.gameFileContext.isValidated)
+    // }
+  }, [props.route.params?.gameFileContext.isFormateur]);
   
+  React.useEffect(() => {      
+    console.log('--')
+
+    if (props.route.params?.gameFileContext.isAdmin ) {      
+      setIsAdmin(props.route.params?.gameFileContext.isAdmin)
+      console.log('check isAdmin:', props.route.params.gameFileContext.isAdmin)
+    }
+
+  }, [props.route.params.gameFileContext.isAdmin]);
+  
+
 
   const applyFilters = () => {
     let filteredFormations = MOCK_FORMATIONS;
@@ -71,6 +101,9 @@ const RechercheFormationsScreen = ( props, { route } ) => {
 
   return (
     <View style={styles.container}>
+      <Text >isAdmin: {isAdmin}</Text>
+      <Text >isFormateur: {isFormateur}</Text>
+      <Text >isValidated: {isValidated}</Text>
       <View style={styles.filtersContainer}>
         <View style={styles.pickersContainer}>
           <Picker

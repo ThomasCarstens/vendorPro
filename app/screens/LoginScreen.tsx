@@ -10,10 +10,13 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(auth.currentUser);
   const [gameFileContext, setGameFile] =useState({});
-  // In case user already logged in - else same in Login component.
+  const [userRoles, setUserRoles] =   useState({});
+
+
+  // In case user just logged in (place in onLogin section...) - else if already logged in, in App component.
   React.useMemo(()=>{
     const userLoggedIn = (auth.currentUser)
-    // console.log(userLoggedIn.uid)  
+
     if (userLoggedIn !== null) {
       // User Roles loaded from Firebase Realtime Database.
       const gameFileRef = ref_d(database, "userdata/"+String(userLoggedIn.uid) );
@@ -22,7 +25,8 @@ const LoginScreen = ({ navigation }) => {
             const data = snapshot.val();
             if (data){
               console.log('Userdata downloaded in Login.js'+ data.isFormateur)
-              setGameFile(data)
+              setUserRoles(data)
+
             }
           })
 
@@ -62,8 +66,24 @@ const LoginScreen = ({ navigation }) => {
         const user = userCredentials.user;
         console.log('logged in with:', user.email);
         
-        console.log('nav to user tabs')
-        navigation.navigate('UserTabs', {isFormateur: true, validated:'true'})
+        
+        const userLoggedIn = (auth.currentUser)
+
+        // if (userLoggedIn !== null) {
+          // User Roles loaded from Firebase Realtime Database.
+          const gameFileRef = ref_d(database, "userdata/"+String(userLoggedIn.uid) );
+    
+          onValue(gameFileRef, (snapshot) =>  {
+                const data = snapshot.val();
+                if (data){
+                  console.log('Userdata downloaded upon Login'+ data.isAdmin)
+                  // setGamerFile(data)
+                  console.log('nav to user tabs')
+                  navigation.navigate('UserTabs', {userRoles: data, formateur: true, validated:'true'})
+                }
+              })
+
+        
 
     }).catch(error => alert(error.message))  
 

@@ -81,8 +81,7 @@ function AdminTabs() {
 }
 
 function App() {
-  const [gameFileContext, setGameFile] =   React.useState({"isFormateur":"true", "isValidated":"true"})
-
+  const [gameFileContext, setGameFile] =   React.useState({"isFormateur":"true", "isValidated":"true"}) //ouch
   const [isAdmin, setIsAdmin] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
