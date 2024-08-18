@@ -129,21 +129,24 @@ export default function App() {
     onValue(userDataRef, (snapshot) => {
           const data = snapshot.val();
           if (data){
-              console.log('Checking users.')
-              console.log(data["UKpwHEnNP6enoIhI4lhBpIdoEfR2"])              
+              console.log('Checking users. --------------------')
+              // console.log(data["UKpwHEnNP6enoIhI4lhBpIdoEfR2"])              
               // setGameFile(data)
-              for (let uid of Object.keys(data)) { 
-              // console.log(uid)
-              let role = data[uid]["role"]
               try {
+              for (let uid of Object.keys(data)) { 
+              console.log(uid)
+              let role = data[uid]["role"]
+              
                   console.log('user role AVF: ', Boolean(role["isAdmin"]), Boolean(role["isValidated"]), Boolean(role["isFormateur"]))
                   // go through each data.uid.role and get a,v,f
                   if ((Boolean(role["isAdmin"]) != isAdmin)||(Boolean(role["isValidated"]) != isValidated)||(Boolean(role["isFormateur"]) != isFormateur)) {//, isValidated, isFormateur
                     console.log(isAdmin, isValidated, isFormateur)
-                    break
+                    console.log('failed: ', data[uid]["notifications"]["token"])
+                    continue
                   }
            
                   // if a,v,f === isA,isV,isF then get data.uid.notifications.token
+                  console.log('passed: ', data[uid]["notifications"]["token"])
                   let userToken = data[uid]["notifications"]["token"]
                   // add it to list
                   setPushTokenList(previous => {
@@ -152,11 +155,12 @@ export default function App() {
                     return pushTokens
                   })
 
-              } catch (error) {
-                  console.log('ROLE PARSING ERROR: ', error);
-              }
 
           }
+
+        } catch (error) {
+          console.log('ROLE PARSING ERROR: ', error);
+      }
           
         }})
       }
@@ -202,7 +206,7 @@ export default function App() {
       <Button
         title="Press to Collect Tokens"
         onPress={async () => {
-          await getListTargetUsers(true, true, false)
+          await getListTargetUsers(false, false, false)
         }}
       />
 

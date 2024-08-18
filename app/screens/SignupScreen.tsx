@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { auth, firebase } from '../../firebase'
+import { auth, firebase, storage, database } from '../../firebase'
+import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import { browserLocalPersistence, browserSessionPersistence, 
   getReactNativePersistence, createUserWithEmailAndPassword, 
   setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
@@ -21,8 +22,14 @@ const SignupScreen = ({ navigation }) => {
     .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Registered with: ', user.email);
-        // set app variables here: loggedIn?
-        navigation.navigate('Signup')
+        // set user roles here
+        set(ref_d(database, `userdata/${auth.currentUser.uid}/role/`), {
+          isAdmin: false,
+          isValidated: false,
+          isFormateur: false
+        })
+        // NewUserTabs since isValidated=false
+        navigation.navigate('NewUserTabs')
     
     }).catch(error => alert(error.message))
 
