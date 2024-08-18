@@ -17,6 +17,9 @@ Notifications.setNotificationHandler({
 
 
 async function sendPushNotification(expoPushToken: string) {
+  // send push notification and add entry in database
+
+
   const message = {
     to: expoPushToken,
     sound: 'default',
@@ -34,6 +37,15 @@ async function sendPushNotification(expoPushToken: string) {
     },
     body: JSON.stringify(message),
   });
+
+  set(ref_d(database, `solo_notifications/`), {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Original Title',
+    body: 'And here is the body!',
+    data: { someData: 'goes here' },
+  })    
+
 }
 
 
@@ -83,6 +95,7 @@ async function registerForPushNotificationsAsync() {
       set(ref_d(database, `userdata/${auth.currentUser.uid}/notifications/`), {
         token: pushTokenString
       })    
+      
       return pushTokenString;
     } catch (e: unknown) {
       handleRegistrationError(`${e}`);
@@ -100,7 +113,7 @@ export default function App() {
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
   const [pushTokenList, setPushTokenList] = useState([]);
-  
+  const [UidPushTokenList, setUidPushTokenList] = useState({});
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then(token => setExpoPushToken(token ?? ''))
@@ -154,6 +167,11 @@ export default function App() {
                     pushTokens.push(userToken)
                     return pushTokens
                   })
+                  setUidPushTokenList(previous => {
+                    let UidAndTokens = {...previous}
+                    UidAndTokens[userToken]=uid
+                    return UidAndTokens
+                  })
 
 
           }
@@ -184,7 +202,17 @@ export default function App() {
         },
         body: JSON.stringify(message),
       });
+
+      set(ref_d(database, `notification-panel/${UidPushTokenList[pushToken]}/date`), { //by uid and date
+        sound: message.sound,
+        title: message.title,
+        body: message.body,
+        data: { someData: message.data.someData},
+      })   
     }
+
+ 
+    
     
   }
   
