@@ -23,9 +23,9 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./google-services.json",
       "package": "com.olivierdumay.appdolivier",
-      "versionCode": 2
+      "versionCode": 12,
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
       "@react-native-firebase/app",
