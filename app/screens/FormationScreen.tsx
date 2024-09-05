@@ -164,7 +164,7 @@ const FormationScreen = ({ route, navigation }) => {
       <Text style={styles.title}>{formation.title}</Text>
         <TouchableOpacity 
             style={styles.signUpButton}
-            onPress={() => navigation.navigate('InscriptionFormationScreen', { formationId: formation.id })}
+            onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
         >
         <Text style={styles.signUpButtonText}>S'inscrire</Text>
       </TouchableOpacity>

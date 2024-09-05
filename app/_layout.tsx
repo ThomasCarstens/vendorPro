@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, Button, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { auth, firebase, storage, database } from '../firebase'
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 
@@ -23,6 +23,8 @@ import DemandesFormationsScreen from './(tabs)/DemandesFormationsScreen';
 import DemandesProfilsScreen from './(tabs)/DemandesProfilsScreen';
 import UnderConstructionScreen from './screens/UnderConstructionScreen';
 import FormationScreen from './screens/FormationScreen';
+import OrganizationsPartenairesScreen from './screens/OrganizationsPartenairesScreen';
+import InscriptionFormationScreen from './screens/InscriptionFormationScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -73,7 +75,7 @@ function AdminTabs() {
       tabBarActiveTintColor: 'tomato',
       tabBarInactiveTintColor: '#1eaae6',
     })}>
-      <Tab.Screen name="DemandesFormations" component={DemandesFormationsScreen} options={{ tabBarIcon: '', tabBarBadge: 3 }} />
+      <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: true, spoofAdmin: true, spoofValidated: true}} />
       <Tab.Screen name="Notifications" component={NotifsScreen} />
       <Tab.Screen name="DemandesProfils" component={DemandesProfilsScreen} />
     </Tab.Navigator>
@@ -132,7 +134,7 @@ function App() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: '#1eaae6',
       })}>
-        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{"gameFileContext": gameFileContext} }/>
         <Tab.Screen name="Notifs" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
         <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/>
       </Tab.Navigator>
@@ -156,16 +158,16 @@ function App() {
         <Stack.Screen name="Login"          component={LoginScreen} options={{headerShown: false}} initialParams={{"gameFileContext": gameFileContext}}  />
         <Stack.Screen name="Signup"         component={SignupScreen} />
         <Stack.Screen name="PasswordReset"  component={PasswordResetScreen} />
-        <Stack.Screen name="BackgroundInfo" component={BackgroundInfoScreen} />
+        <Stack.Screen name="OrganizationsPartenaires" component={OrganizationsPartenairesScreen} />
 
 
         
         <Stack.Screen name="AjoutFormation"       component={AjoutFormationScreen} />
         <Stack.Screen name="Formation"       component={FormationScreen} />
-        <Stack.Screen name="RechercheFormations"  component={RechercheFormationsScreen} />
-
+        <Stack.Screen name="RechercheFormations"  component={RechercheFormationsScreen} options={{ headerShown: true, headerBackTitleVisible: true }}/>
+        <Stack.Screen name="InscriptionFormation" component={InscriptionFormationScreen} />
         {/* tabs if admin */}
-        <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }}  />
 
         {/* tabs if not validated */}
         <Stack.Screen name="NewUserTabs" component={NewUserTabs} options={{ headerShown: false }} />

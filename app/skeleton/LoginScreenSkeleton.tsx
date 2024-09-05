@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Text, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { browserLocalPersistence, browserSessionPersistence, getReactNativePersistence, createUserWithEmailAndPassword, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
 import { auth, firebase, storage, database } from '../../firebase'
 import { StackActions } from '@react-navigation/native';
@@ -102,60 +102,35 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../assets/images/logo_placeholder.png')}
-        style={styles.logo}
+      {/* <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
       />
-      <View style={styles.inputContainer}>
-        {/* <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#A0A0A0"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#A0A0A0"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        /> */}
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('NewUserTabs', {spoofFormateur: false, spoofAdmin: false, spoofValidated: false})}
-        >
-          <Text style={styles.buttonText}>Exemple d'Inscription (Démo)</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('UserTabs', {spoofFormateur: false, spoofAdmin: false, spoofValidated: true})}
-        >
-          <Text style={styles.buttonText}>Accès Etudiant (Démo)</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('AdminTabs')}
-        >
-          <Text style={styles.buttonText}>Accès Admin (Démo)</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('UserTabs', {spoofFormateur: true, spoofAdmin: false, spoofValidated: true})}
-        >
-          <Text style={styles.buttonText}>Accès Formateur (Démo)</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('OrganizationsPartenaires')}
-        >
-          <Text style={styles.buttonText}>Background Info</Text>
-        </TouchableOpacity>
-      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      /> */}
+
+      <Button title="Exemple d'Inscription (Démo)" onPress={() => navigation.navigate('NewUserTabs', {spoofFormateur: false, spoofAdmin: false, spoofValidated: false})} />
+      <Button title="Accès Etudiant (Démo)" onPress={() => navigation.navigate('UserTabs', {spoofFormateur: false, spoofAdmin: false, spoofValidated: true})} />
+      <Button title="Accès Admin (Démo)" onPress={() => navigation.navigate('AdminTabs', {spoofFormateur: true, spoofAdmin: true, spoofValidated: true})} />
+      <Button title="Accès Formateur (Démo)" onPress={() => navigation.navigate('UserTabs', {spoofFormateur: true, spoofAdmin: false, spoofValidated: true})} />
+      
+      
+      <Button title="Background Info" onPress={() => navigation.navigate('BackgroundInfo')} />
+
+
+      {/* <Button title="Login" onPress={handleLogin} />    
+      <Button title="Logout" onPress={handleLogout} />  
+      <Button title="Sign Up" onPress={() => navigation.navigate('Signup')} />
+      <Button title="Reset Password" onPress={() => navigation.navigate('PasswordReset')} />
+      <Button title="Background Info" onPress={() => navigation.navigate('BackgroundInfo')} /> */}
     </View>
   );
 };
@@ -163,40 +138,15 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#00008B', // Dark blue background
-    alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
-  logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 30,
-  },
-  inputContainer: {
-    width: '100%',
-    marginBottom: 20,
-  },
   input: {
-    backgroundColor: '#FFFFFF',
-    width: '100%',
-    padding: 15,
-    borderRadius: 5,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
     marginBottom: 10,
-  },
-  buttonContainer: {
-    width: '100%',
-  },
-  button: {
-    backgroundColor: '#FFFFFF',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  buttonText: {
-    color: '#00008B',
-    fontWeight: 'bold',
+    paddingHorizontal: 10,
   },
 });
 
