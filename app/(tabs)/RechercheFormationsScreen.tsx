@@ -7,16 +7,176 @@ import { Ionicons } from '@expo/vector-icons';
 
 // Must sync with Formation page.
 const MOCK_FORMATIONS = [
-  { id: '1', title: 'Cardiologie avancée', date: '2024-09-15', image: 'https://via.placeholder.com/150', keywords: ['pour cardiologues certifiés', '3e cycle'], price: 120, category: 'Médecine', lieu: 'Paris', niveau: 'Avancé', status: 'inscrit' },
-  { id: '2', title: 'Pédiatrie moderne', date: '2024-10-01', image: 'https://via.placeholder.com/150', keywords: ['pour pédiatres en formation continue', 'post-certification'], price: 100, category: 'Médecine', lieu: 'Lyon', niveau: 'Intermédiaire', status: 'propose' },
-  { id: '3', title: 'Chirurgie laparoscopique', date: '2024-10-20', image: 'https://via.placeholder.com/150', keywords: ['pour chirurgiens 3e année', 'formation technique avancée'], price: 150, category: 'Chirurgie', lieu: 'Marseille', niveau: 'Avancé', status: 'inscrit' },
-  { id: '4', title: 'Psychiatrie clinique', date: '2024-11-05', image: 'https://via.placeholder.com/150', keywords: ['pour psychiatres en activité', 'certification en santé mentale'], price: 110, category: 'Psychiatrie', lieu: 'Bordeaux', niveau: 'Intermédiaire' },
-  { id: '5', title: 'Urgences médicales', date: '2024-11-15', image: 'https://via.placeholder.com/150', keywords: ['formation initiale', 'pour internes en 1re année'], price: 90, category: 'Médecine', lieu: 'Lille', niveau: 'Débutant' },
-  { id: '6', title: 'Neurologie clinique', date: '2024-12-01', image: 'https://via.placeholder.com/150', keywords: ['pour neurologues certifiés', 'spécialisation en neurodiagnostic'], price: 130, category: 'Neurologie', lieu: 'Toulouse', niveau: 'Avancé', status: 'propose' },
-  { id: '7', title: 'Dermatologie pratique', date: '2024-12-10', image: 'https://via.placeholder.com/150', keywords: ['pour dermatologues en formation', 'techniques pratiques'], price: 95, category: 'Dermatologie', lieu: 'Nice', niveau: 'Intermédiaire' },
-  { id: '8', title: 'Oncologie moderne', date: '2025-01-05', image: 'https://via.placeholder.com/150', keywords: ['pour oncologues certifiés', 'post-certification'], price: 140, category: 'Oncologie', lieu: 'Strasbourg', niveau: 'Avancé' },
-  { id: '9', title: 'Gynécologie obstétrique', date: '2025-01-20', image: 'https://via.placeholder.com/150', keywords: ['pour gynécologues en 3e année', 'formation en obstétrique'], price: 105, category: 'Gynécologie', lieu: 'Nantes', niveau: 'Intermédiaire' },
-  { id: '10', title: 'Anesthésiologie avancée', date: '2025-02-01', image: 'https://via.placeholder.com/150', keywords: ['pour anesthésistes certifiés', 'spécialisation en techniques avancées'], price: 160, category: 'Anesthésiologie', lieu: 'Montpellier', niveau: 'Avancé' },
+  { 
+    id: '1', 
+    title: 'Cardiologie avancée', 
+    date: '2024-09-15', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour cardiologues certifiés', '3e cycle'], 
+    category: 'Médecine', 
+    lieu: 'Paris', 
+    niveau: 'Avancé', 
+    status: 'inscrit',
+    heureDebut: '09:00',
+    heureFin: '17:00',
+    nature: 'Formation continue',
+    anneeConseillee: '3e année et plus',
+    tarifEtudiant: 80,
+    tarifMedecin: 120
+  },
+  { 
+    id: '2', 
+    title: 'Pédiatrie moderne', 
+    date: '2024-10-01', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour pédiatres en formation continue', 'post-certification'], 
+    category: 'Médecine', 
+    lieu: 'Lyon', 
+    niveau: 'Intermédiaire', 
+    status: 'propose',
+    heureDebut: '10:00',
+    heureFin: '18:00',
+    nature: 'Formation spécialisée',
+    anneeConseillee: '2e année et plus',
+    tarifEtudiant: 70,
+    tarifMedecin: 100
+  },
+  { 
+    id: '3', 
+    title: 'Chirurgie laparoscopique', 
+    date: '2024-10-20', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour chirurgiens 3e année', 'formation technique avancée'], 
+    category: 'Chirurgie', 
+    lieu: 'Marseille', 
+    niveau: 'Avancé', 
+    status: 'inscrit',
+    heureDebut: '08:30',
+    heureFin: '16:30',
+    nature: 'Formation pratique',
+    anneeConseillee: '3e année et plus',
+    tarifEtudiant: 100,
+    tarifMedecin: 150
+  },
+  { 
+    id: '4', 
+    title: 'Psychiatrie clinique', 
+    date: '2024-11-05', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour psychiatres en activité', 'certification en santé mentale'], 
+    category: 'Psychiatrie', 
+    lieu: 'Bordeaux', 
+    niveau: 'Intermédiaire',
+    status: 'propose',
+    heureDebut: '09:30',
+    heureFin: '17:30',
+    nature: 'Formation théorique et pratique',
+    anneeConseillee: '2e année et plus',
+    tarifEtudiant: 75,
+    tarifMedecin: 110
+  },
+  { 
+    id: '5', 
+    title: 'Urgences médicales', 
+    date: '2024-11-15', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['formation initiale', 'pour internes en 1re année'], 
+    category: 'Médecine', 
+    lieu: 'Lille', 
+    niveau: 'Débutant',
+    status: 'inscrit',
+    heureDebut: '08:00',
+    heureFin: '16:00',
+    nature: 'Formation initiale',
+    anneeConseillee: '1ère année',
+    tarifEtudiant: 60,
+    tarifMedecin: 90
+  },
+  { 
+    id: '6', 
+    title: 'Neurologie clinique', 
+    date: '2024-12-01', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour neurologues certifiés', 'spécialisation en neurodiagnostic'], 
+    category: 'Neurologie', 
+    lieu: 'Toulouse', 
+    niveau: 'Avancé', 
+    status: 'propose',
+    heureDebut: '09:00',
+    heureFin: '18:00',
+    nature: 'Formation spécialisée',
+    anneeConseillee: '3e année et plus',
+    tarifEtudiant: 90,
+    tarifMedecin: 130
+  },
+  { 
+    id: '7', 
+    title: 'Dermatologie pratique', 
+    date: '2024-12-10', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour dermatologues en formation', 'techniques pratiques'], 
+    category: 'Dermatologie', 
+    lieu: 'Nice', 
+    niveau: 'Intermédiaire',
+    status: 'inscrit',
+    heureDebut: '10:00',
+    heureFin: '17:00',
+    nature: 'Formation pratique',
+    anneeConseillee: '2e année et plus',
+    tarifEtudiant: 65,
+    tarifMedecin: 95
+  },
+  { 
+    id: '8', 
+    title: 'Oncologie moderne', 
+    date: '2025-01-05', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour oncologues certifiés', 'post-certification'], 
+    category: 'Oncologie', 
+    lieu: 'Strasbourg', 
+    niveau: 'Avancé',
+    status: 'propose',
+    heureDebut: '09:00',
+    heureFin: '18:00',
+    nature: 'Formation continue',
+    anneeConseillee: '3e année et plus',
+    tarifEtudiant: 95,
+    tarifMedecin: 140
+  },
+  { 
+    id: '9', 
+    title: 'Gynécologie obstétrique', 
+    date: '2025-01-20', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour gynécologues en 3e année', 'formation en obstétrique'], 
+    category: 'Gynécologie', 
+    lieu: 'Nantes', 
+    niveau: 'Intermédiaire',
+    status: 'inscrit',
+    heureDebut: '08:30',
+    heureFin: '16:30',
+    nature: 'Formation spécialisée',
+    anneeConseillee: '3e année',
+    tarifEtudiant: 75,
+    tarifMedecin: 105
+  },
+  { 
+    id: '10', 
+    title: 'Anesthésiologie avancée', 
+    date: '2025-02-01', 
+    image: 'https://via.placeholder.com/150', 
+    keywords: ['pour anesthésistes certifiés', 'spécialisation en techniques avancées'], 
+    category: 'Anesthésiologie', 
+    lieu: 'Montpellier', 
+    niveau: 'Avancé',
+    status: 'propose',
+    heureDebut: '09:00',
+    heureFin: '17:30',
+    nature: 'Formation avancée',
+    anneeConseillee: '3e année et plus',
+    tarifEtudiant: 110,
+    tarifMedecin: 160
+  },
 ];
 
 const RechercheFormationsScreen = (props, { route }) => {
@@ -101,7 +261,12 @@ const RechercheFormationsScreen = (props, { route }) => {
       <Image source={{ uri: item.image }} style={styles.formationImage} />
       <Text style={styles.formationTitle}>{item.title}</Text>
       <Text>Date: {item.date}</Text>
-      <Text>Prix: {item.price} €</Text>
+      <Text>Lieu: {item.lieu}</Text>
+      <Text>Horaires: {item.heureDebut} - {item.heureFin}</Text>
+      <Text>Nature: {item.nature}</Text>
+      <Text>Année conseillée: {item.anneeConseillee}</Text>
+      <Text>Tarif étudiant DIU: {item.tarifEtudiant} €</Text>
+      <Text>Tarif médecin: {item.tarifMedecin} €</Text>
       <View style={styles.keywordsContainer}>
         {item.keywords.map((keyword, index) => (
           <Text key={index} style={styles.keyword}>{keyword}</Text>
@@ -113,7 +278,7 @@ const RechercheFormationsScreen = (props, { route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
-        {['Toutes', "J'y suis inscrit", 'Je propose'].map((tab) => (
+        {(isFormateur?['Toutes', "J'y suis inscrit", 'Je propose']:['Toutes', "J'y suis inscrit"]).map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}

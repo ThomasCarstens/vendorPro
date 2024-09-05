@@ -25,7 +25,7 @@ import UnderConstructionScreen from './screens/UnderConstructionScreen';
 import FormationScreen from './screens/FormationScreen';
 import OrganizationsPartenairesScreen from './screens/OrganizationsPartenairesScreen';
 import InscriptionFormationScreen from './screens/InscriptionFormationScreen';
-
+import ValidationProfilScreen from './screens/ValidationProfilScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -37,11 +37,11 @@ function NewUserTabs() {
         let iconName;
 
         if (route.name === 'Inscription') {
-          iconName = focused ? 'add-circle' : 'add-circle';
-        } else if (route.name === 'Notifs') {
-          iconName = focused ? 'add-circle' : 'add-circle';
+          iconName = focused ? 'search' : 'search';
+        } else if (route.name === 'Notifications') {
+          iconName = focused ? 'notifications-outline' : 'notifications-outline';
         } else if (route.name === 'Profil') {
-          iconName = focused ? 'add-circle' : 'add-circle';
+          iconName = focused ? 'person' : 'person';
         }
         // You can return any component that you like here!
         return <Ionicons name={iconName} size={size} color={color} />;
@@ -50,7 +50,7 @@ function NewUserTabs() {
       tabBarInactiveTintColor: '#1eaae6',
     })}>
       <Tab.Screen name="Inscription" component={InscriptionScreen}  />
-      <Tab.Screen name="Notifs" component={NotifsScreen} />
+      <Tab.Screen name="Notifications" component={NotifsScreen} />
       <Tab.Screen name="Profil" component={ProfilScreen} />
     </Tab.Navigator>
   );
@@ -62,12 +62,12 @@ function AdminTabs() {
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'DemandesFormations') {
-          iconName = focused ? 'add-circle' : 'add-circle';
+        if (route.name === 'RechercheFormations') {
+          iconName = focused ? 'search' : 'search';
         } else if (route.name === 'Notifications') {
-          iconName = focused ? 'add-circle' : 'add-circle';
+          iconName = focused ? 'notifications-outline' : 'notifications-outline';
         } else if (route.name === 'DemandesProfils') {
-          iconName = focused ? 'add-circle' : 'add-circle';
+          iconName = focused ? 'people' : 'people';
         }
         // You can return any component that you like here!
         return <Ionicons name={iconName} size={size} color={color} />;
@@ -122,11 +122,11 @@ function App() {
           let iconName;
   
           if (route.name === 'RechercheFormations') {
-            iconName = focused ? 'add-circle' : 'add-circle';
-          } else if (route.name === 'Notifs') {
-            iconName = focused ? 'add-circle' : 'add-circle';
+            iconName = focused ? 'add-circle' : 'search';
+          } else if (route.name === 'Notifications') {
+            iconName = focused ? 'notifications-outline' : 'notifications-outline';
           } else if (route.name === 'Profil') {
-            iconName = focused ? 'add-circle' : 'add-circle';
+            iconName = focused ? 'person' : 'person';
           }
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -134,8 +134,8 @@ function App() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: '#1eaae6',
       })}>
-        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{"gameFileContext": gameFileContext} }/>
-        <Tab.Screen name="Notifs" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
+        <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
         <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/>
       </Tab.Navigator>
     );
@@ -168,6 +168,7 @@ function App() {
         <Stack.Screen name="InscriptionFormation" component={InscriptionFormationScreen} />
         {/* tabs if admin */}
         <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }}  />
+        <Stack.Screen name="ValidationProfil" component={ValidationProfilScreen} />
 
         {/* tabs if not validated */}
         <Stack.Screen name="NewUserTabs" component={NewUserTabs} options={{ headerShown: false }} />

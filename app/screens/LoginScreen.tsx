@@ -103,7 +103,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/images/logo_placeholder.png')}
+        source={require('../../assets/images/icon.png')}
         style={styles.logo}
       />
       <View style={styles.inputContainer}>
@@ -153,7 +153,7 @@ const LoginScreen = ({ navigation }) => {
           style={styles.button}
           onPress={() => navigation.navigate('OrganizationsPartenaires')}
         >
-          <Text style={styles.buttonText}>Background Info</Text>
+          <Text style={styles.buttonText}>Partenaires</Text>
         </TouchableOpacity>
       </View>
     </View>

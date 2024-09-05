@@ -29,7 +29,7 @@ const OrganizationsPartenairesScreen = () => {
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>Organisations Partenaires</Text> */}
-      <Text style={styles.title}> Petit texte explicatif </Text>
+      <Text style={styles.title}> Petit texte explicatif... </Text>
 
       <FlatList
         data={organizations}
