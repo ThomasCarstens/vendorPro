@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { ref as ref_d, set } from 'firebase/database';
 import { database } from '../../firebase';
 
-const AjoutFormationScreen = ({ navigation }) => {
+const AjoutFormationScreen = ({ navigation, route }) => {
   const [formData, setFormData] = useState({
     id: Date.now().toString(),
     title: '',
@@ -32,6 +32,19 @@ const AjoutFormationScreen = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+
+  useEffect(() => {
+    const existingFormation = route.params?.formation;
+    if (existingFormation) {
+      setFormData({
+        ...existingFormation,
+        date: new Date(existingFormation.date),
+        heureDebut: new Date(`2000-01-01T${existingFormation.heureDebut}`),
+        heureFin: new Date(`2000-01-01T${existingFormation.heureFin}`),
+        keywords: existingFormation.keywords.join(', '),
+      });
+    }
+  }, [route.params?.formation]);
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({
@@ -67,7 +80,9 @@ const AjoutFormationScreen = ({ navigation }) => {
     if (validateForm()) {
       Alert.alert(
         "Confirmation",
-        "Voulez-vous vraiment ajouter cette formation ?",
+        route.params?.formation 
+          ? "Voulez-vous vraiment modifier cette formation ?" 
+          : "Voulez-vous vraiment ajouter cette formation ?",
         [
           {
             text: "Annuler",
@@ -95,18 +110,22 @@ const AjoutFormationScreen = ({ navigation }) => {
 
     set(ref_d(database, `formations/${formData.id}`), formattedData)
       .then(() => {
-        Alert.alert("Succès", "La formation a été ajoutée avec succès.");
+        Alert.alert("Succès", route.params?.formation 
+          ? "La formation a été modifiée avec succès."
+          : "La formation a été ajoutée avec succès.");
         navigation.goBack();
       })
       .catch((error) => {
-        Alert.alert("Erreur", "Une erreur s'est produite lors de l'ajout de la formation.");
+        Alert.alert("Erreur", "Une erreur s'est produite lors de l'opération.");
         console.error(error);
       });
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Ajouter une nouvelle formation</Text>
+      <Text style={styles.title}>
+        {route.params?.formation ? "Modifier la formation" : "Ajouter une nouvelle formation"}
+      </Text>
 
       <Text style={styles.label}>Titre *</Text>
       <TextInput
@@ -293,7 +312,9 @@ const AjoutFormationScreen = ({ navigation }) => {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Ajouter la formation</Text>
+        <Text style={styles.buttonText}>
+          {route.params?.formationId ? "Modifier la formation" : "Ajouter la formation"}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );

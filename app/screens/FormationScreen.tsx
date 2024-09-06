@@ -64,7 +64,7 @@ const FormationScreen = ({ route, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.modifyButton}
-          onPress={() => navigation.navigate('AjoutFormation', { formationId: formation.id })}
+          onPress={() => navigation.navigate('AjoutFormation', { formation: formation })}
         >
           <Text style={styles.buttonText}>Modifier</Text>
         </TouchableOpacity>
