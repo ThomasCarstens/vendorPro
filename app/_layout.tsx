@@ -33,6 +33,7 @@ const Tab = createBottomTabNavigator();
 function NewUserTabs() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
+
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
@@ -59,6 +60,14 @@ function NewUserTabs() {
 function AdminTabs() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
+      tabBarStyle:  {
+        // height: 90,
+        // paddingHorizontal: 5,
+        // paddingTop: 0,
+        backgroundColor: '#1a53ff',
+        // position: 'absolute',
+        // borderTopWidth: 0,
+    },
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
@@ -72,8 +81,8 @@ function AdminTabs() {
         // You can return any component that you like here!
         return <Ionicons name={iconName} size={size} color={color} />;
       },
-      tabBarActiveTintColor: 'tomato',
-      tabBarInactiveTintColor: '#1eaae6',
+      tabBarActiveTintColor: 'black',
+      tabBarInactiveTintColor: 'white',
     })}>
       <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: true, spoofAdmin: true, spoofValidated: true}} />
       <Tab.Screen name="Notifications" component={NotifsScreen} />
@@ -136,10 +145,37 @@ function App() {
       })}>
         <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
         <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        {/* <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/> */}
+      </Tab.Navigator>
+    );
+  }
+
+  function FormateurTabs() {
+    return (
+      <Tab.Navigator screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+  
+          if (route.name === 'RechercheFormations') {
+            iconName = focused ? 'add-circle' : 'search';
+          } else if (route.name === 'Notifications') {
+            iconName = focused ? 'notifications-outline' : 'notifications-outline';
+          } else if (route.name === 'Profil') {
+            iconName = focused ? 'person' : 'person';
+          }
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: '#1eaae6',
+      })}>
+        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: true, spoofAdmin: false, spoofValidated: true}}/>
+        <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
         <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/>
       </Tab.Navigator>
     );
   }
+
   // useEffect(()=>{   
   //   setGameFile({"isFormateur":"true"})
   // }, [])
@@ -166,16 +202,19 @@ function App() {
         <Stack.Screen name="Formation"       component={FormationScreen} />
         <Stack.Screen name="RechercheFormations"  component={RechercheFormationsScreen} options={{ headerShown: true, headerBackTitleVisible: true }}/>
         <Stack.Screen name="InscriptionFormation" component={InscriptionFormationScreen} />
-        {/* tabs if admin */}
+
+        {/* tabs if ADMIN */}
         <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }}  />
         <Stack.Screen name="ValidationProfil" component={ValidationProfilScreen} />
 
-        {/* tabs if not validated */}
+        {/* tabs if NEW */}
         <Stack.Screen name="NewUserTabs" component={NewUserTabs} options={{ headerShown: false }} />
 
-        {/* tabs if validated */}
+        {/* tabs if ETUDIANT */}
         <Stack.Screen name="UserTabs" component={UserTabs} options={{ headerShown: false }}  />
 
+        {/* tabs if FORMATEUR */}
+        <Stack.Screen name="FormateurTabs" component={FormateurTabs} options={{ headerShown: false }}  />
         
 
         <Stack.Screen name="UnderConstruction" component={UnderConstructionScreen} />

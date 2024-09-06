@@ -7,6 +7,8 @@ import { browserLocalPersistence, browserSessionPersistence,
   getReactNativePersistence, createUserWithEmailAndPassword, 
   setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
 
+//   import { auth, firebase, storage, database } from '../../firebase'
+// import { ref as ref_d, set, get, onValue } from 'firebase/database'
 const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

@@ -1,197 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, FlatList, Animated } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-
-// Must sync with Formation page.
-const MOCK_FORMATIONS = [
-  { 
-    id: '1', 
-    title: 'Cardiologie avancée', 
-    date: '2024-09-15', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour cardiologues certifiés', '3e cycle'], 
-    category: 'Médecine', 
-    lieu: 'Paris', 
-    niveau: 'Avancé', 
-    status: 'inscrit',
-    heureDebut: '09:00',
-    heureFin: '17:00',
-    nature: 'Formation continue',
-    anneeConseillee: '3e année et plus',
-    tarifEtudiant: 80,
-    tarifMedecin: 120
-  },
-  { 
-    id: '2', 
-    title: 'Pédiatrie moderne', 
-    date: '2024-10-01', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour pédiatres en formation continue', 'post-certification'], 
-    category: 'Médecine', 
-    lieu: 'Lyon', 
-    niveau: 'Intermédiaire', 
-    status: 'propose',
-    heureDebut: '10:00',
-    heureFin: '18:00',
-    nature: 'Formation spécialisée',
-    anneeConseillee: '2e année et plus',
-    tarifEtudiant: 70,
-    tarifMedecin: 100
-  },
-  { 
-    id: '3', 
-    title: 'Chirurgie laparoscopique', 
-    date: '2024-10-20', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour chirurgiens 3e année', 'formation technique avancée'], 
-    category: 'Chirurgie', 
-    lieu: 'Marseille', 
-    niveau: 'Avancé', 
-    status: 'inscrit',
-    heureDebut: '08:30',
-    heureFin: '16:30',
-    nature: 'Formation pratique',
-    anneeConseillee: '3e année et plus',
-    tarifEtudiant: 100,
-    tarifMedecin: 150
-  },
-  { 
-    id: '4', 
-    title: 'Psychiatrie clinique', 
-    date: '2024-11-05', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour psychiatres en activité', 'certification en santé mentale'], 
-    category: 'Psychiatrie', 
-    lieu: 'Bordeaux', 
-    niveau: 'Intermédiaire',
-    status: 'propose',
-    heureDebut: '09:30',
-    heureFin: '17:30',
-    nature: 'Formation théorique et pratique',
-    anneeConseillee: '2e année et plus',
-    tarifEtudiant: 75,
-    tarifMedecin: 110
-  },
-  { 
-    id: '5', 
-    title: 'Urgences médicales', 
-    date: '2024-11-15', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['formation initiale', 'pour internes en 1re année'], 
-    category: 'Médecine', 
-    lieu: 'Lille', 
-    niveau: 'Débutant',
-    status: 'inscrit',
-    heureDebut: '08:00',
-    heureFin: '16:00',
-    nature: 'Formation initiale',
-    anneeConseillee: '1ère année',
-    tarifEtudiant: 60,
-    tarifMedecin: 90
-  },
-  { 
-    id: '6', 
-    title: 'Neurologie clinique', 
-    date: '2024-12-01', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour neurologues certifiés', 'spécialisation en neurodiagnostic'], 
-    category: 'Neurologie', 
-    lieu: 'Toulouse', 
-    niveau: 'Avancé', 
-    status: 'propose',
-    heureDebut: '09:00',
-    heureFin: '18:00',
-    nature: 'Formation spécialisée',
-    anneeConseillee: '3e année et plus',
-    tarifEtudiant: 90,
-    tarifMedecin: 130
-  },
-  { 
-    id: '7', 
-    title: 'Dermatologie pratique', 
-    date: '2024-12-10', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour dermatologues en formation', 'techniques pratiques'], 
-    category: 'Dermatologie', 
-    lieu: 'Nice', 
-    niveau: 'Intermédiaire',
-    status: 'inscrit',
-    heureDebut: '10:00',
-    heureFin: '17:00',
-    nature: 'Formation pratique',
-    anneeConseillee: '2e année et plus',
-    tarifEtudiant: 65,
-    tarifMedecin: 95
-  },
-  { 
-    id: '8', 
-    title: 'Oncologie moderne', 
-    date: '2025-01-05', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour oncologues certifiés', 'post-certification'], 
-    category: 'Oncologie', 
-    lieu: 'Strasbourg', 
-    niveau: 'Avancé',
-    status: 'propose',
-    heureDebut: '09:00',
-    heureFin: '18:00',
-    nature: 'Formation continue',
-    anneeConseillee: '3e année et plus',
-    tarifEtudiant: 95,
-    tarifMedecin: 140
-  },
-  { 
-    id: '9', 
-    title: 'Gynécologie obstétrique', 
-    date: '2025-01-20', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour gynécologues en 3e année', 'formation en obstétrique'], 
-    category: 'Gynécologie', 
-    lieu: 'Nantes', 
-    niveau: 'Intermédiaire',
-    status: 'inscrit',
-    heureDebut: '08:30',
-    heureFin: '16:30',
-    nature: 'Formation spécialisée',
-    anneeConseillee: '3e année',
-    tarifEtudiant: 75,
-    tarifMedecin: 105
-  },
-  { 
-    id: '10', 
-    title: 'Anesthésiologie avancée', 
-    date: '2025-02-01', 
-    image: 'https://via.placeholder.com/150', 
-    keywords: ['pour anesthésistes certifiés', 'spécialisation en techniques avancées'], 
-    category: 'Anesthésiologie', 
-    lieu: 'Montpellier', 
-    niveau: 'Avancé',
-    status: 'propose',
-    heureDebut: '09:00',
-    heureFin: '17:30',
-    nature: 'Formation avancée',
-    anneeConseillee: '3e année et plus',
-    tarifEtudiant: 110,
-    tarifMedecin: 160
-  },
-];
+import { auth, firebase, storage, database } from '../../firebase'
+import { ref as ref_d, set, get, onValue } from 'firebase/database'
 
 const RechercheFormationsScreen = (props, { route }) => {
-  const [formations, setFormations] = useState(MOCK_FORMATIONS);
+  const [formations, setFormations] = useState([]);
+  const [filteredFormations, setFilteredFormations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [lieuFilter, setLieuFilter] = useState('');
   const [niveauFilter, setNiveauFilter] = useState('');
-  const [activeTab, setActiveTab] = useState('Toutes');
+  const [activeTab, setActiveTab] = useState('Visibles');
   const [isFormateur, setIsFormateur] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isValidated, setIsValidated] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const filterHeight = useState(new Animated.Value(0))[0];
 
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [lieuOptions, setLieuOptions] = useState([]);
+  const [niveauOptions, setNiveauOptions] = useState([]);
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    fetchFormations();
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -224,34 +61,99 @@ const RechercheFormationsScreen = (props, { route }) => {
     }
   }, [props.route.params?.spoofAdmin]);
 
+  const fetchFormations = () => {
+    setLoading(true);
+    const formationsRef = ref_d(database, "formations/");
+    onValue(formationsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formationsArray = Object.keys(data).map(key => ({
+          ...data[key],
+          id: key
+        }));
+        setFormations(formationsArray);
+        setFilteredFormations(formationsArray);
+        setLoading(false);
+        updateFilterOptions(formationsArray);
+      } else {
+        setError('Aucune formation trouvée');
+        setLoading(false);
+      }
+    }, (error) => {
+      setError('Erreur lors du chargement des formations');
+      setLoading(false);
+    });
+  };
+
+  const updateFilterOptions = (formationsArray) => {
+    const categories = [...new Set(formationsArray.map(f => f.category))];
+    const lieux = [...new Set(formationsArray.map(f => f.lieu))];
+    const niveaux = [...new Set(formationsArray.map(f => f.niveau))];
+
+    setCategoryOptions(categories);
+    setLieuOptions(lieux);
+    setNiveauOptions(niveaux);
+  };
+
   const toggleFilters = () => {
     setShowFilters(!showFilters);
     Animated.timing(filterHeight, {
-      toValue: showFilters ? 0 : 200,
+      toValue: showFilters ? 0 : 300,
       duration: 300,
       useNativeDriver: false,
     }).start();
   };
 
-  const applyFilters = () => {
-    let filteredFormations = MOCK_FORMATIONS;
+  const applyFilters = (tab) => {
+    let filtered = formations;
     if (categoryFilter) {
-      filteredFormations = filteredFormations.filter(f => f.category === categoryFilter);
+      filtered = filtered.filter(f => f.category === categoryFilter);
     }
     if (lieuFilter) {
-      filteredFormations = filteredFormations.filter(f => f.lieu === lieuFilter);
+      filtered = filtered.filter(f => f.lieu === lieuFilter);
     }
     if (niveauFilter) {
-      filteredFormations = filteredFormations.filter(f => f.niveau === niveauFilter);
+      filtered = filtered.filter(f => f.niveau === niveauFilter);
     }
-    if (activeTab === "J'y suis inscrit") {
-      filteredFormations = filteredFormations.filter(f => f.status === 'inscrit');
-    } else if (activeTab === 'Je propose') {
-      filteredFormations = filteredFormations.filter(f => f.status === 'propose');
+
+    if (tab === "J'y suis inscrit") {
+      filtered = filtered.filter(f => {
+        (f.status === 'inscrit')});
+    } else if (tab === 'Je propose') {
+      filtered = filtered.filter(f => (f.status === 'propose'));
+    } else if (tab === 'Corbeille') {
+      filtered = filtered.filter(f => f.active === false);
+    } else {
+      // 'Visibles' tab
+      filtered = filtered.filter(f => f.active === true);
     }
-    setFormations(filteredFormations);
-    toggleFilters();
+    setFilteredFormations(filtered);
   };
+
+  const renderFilterButtons = (title, options, selectedValue, setSelectedValue) => (
+    <View style={styles.filterSection}>
+      <Text style={styles.filterTitle}>{title}</Text>
+      <View style={styles.filterButtonsContainer}>
+        {options.map((option) => (
+          <TouchableOpacity
+            key={option}
+            style={[
+              styles.filterButton,
+              selectedValue === option && styles.filterButtonSelected
+            ]}
+            onPress={() => setSelectedValue(selectedValue === option ? '' : option)}
+          >
+            <Text style={[
+              styles.filterButtonText,
+              selectedValue === option && styles.filterButtonTextSelected
+            ]}>
+              {option}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
 
   const renderFormationItem = ({ item }) => (
     <TouchableOpacity 
@@ -275,16 +177,32 @@ const RechercheFormationsScreen = (props, { route }) => {
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Chargement des formations...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text>{error}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
-        {(isFormateur?['Toutes', "J'y suis inscrit", 'Je propose']:['Toutes', "J'y suis inscrit"]).map((tab) => (
+        {(isFormateur?['Visibles', "J'y suis inscrit", 'Je propose', 'Corbeille']:['Visibles', "J'y suis inscrit"]).map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}
             onPress={() => {
               setActiveTab(tab);
-              applyFilters();
+              applyFilters(tab)
             }}
           >
             <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>{tab}</Text>
@@ -292,49 +210,25 @@ const RechercheFormationsScreen = (props, { route }) => {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.filterButton} onPress={toggleFilters}>
-        <Text style={styles.filterButtonText}>Filtres</Text>
+      <TouchableOpacity style={styles.filterToggleButton} onPress={toggleFilters}>
+        <Text style={styles.filterToggleButtonText}>Filtres de recherche</Text>
         <Ionicons name={showFilters ? "chevron-up" : "chevron-down"} size={24} color="white" />
       </TouchableOpacity>
 
       <Animated.View style={[styles.filtersContainer, { height: filterHeight }]}>
-        <Picker
-          selectedValue={categoryFilter}
-          style={styles.picker}
-          onValueChange={(itemValue) => setCategoryFilter(itemValue)}
-        >
-          <Picker.Item label="Toute Catégorie" value="" />
-          <Picker.Item label="Médecine" value="Médecine" />
-          <Picker.Item label="Chirurgie" value="Chirurgie" />
-          <Picker.Item label="Psychiatrie" value="Psychiatrie" />
-        </Picker>
-        <Picker
-          selectedValue={lieuFilter}
-          style={styles.picker}
-          onValueChange={(itemValue) => setLieuFilter(itemValue)}
-        >
-          <Picker.Item label="Tout Lieu" value="" />
-          <Picker.Item label="Paris" value="Paris" />
-          <Picker.Item label="Lyon" value="Lyon" />
-          <Picker.Item label="Marseille" value="Marseille" />
-        </Picker>
-        <Picker
-          selectedValue={niveauFilter}
-          style={styles.picker}
-          onValueChange={(itemValue) => setNiveauFilter(itemValue)}
-        >
-          <Picker.Item label="Tout Niveau" value="" />
-          <Picker.Item label="Débutant" value="Débutant" />
-          <Picker.Item label="Intermédiaire" value="Intermédiaire" />
-          <Picker.Item label="Avancé" value="Avancé" />
-        </Picker>
-        <TouchableOpacity style={styles.applyFilterButton} onPress={applyFilters}>
-          <Text style={styles.applyFilterButtonText}>Appliquer les filtres</Text>
-        </TouchableOpacity>
+        <ScrollView>
+          {renderFilterButtons('Catégorie', categoryOptions, categoryFilter, setCategoryFilter)}
+          {renderFilterButtons('Lieu', lieuOptions, lieuFilter, setLieuFilter)}
+          {renderFilterButtons('Niveau', niveauOptions, niveauFilter, setNiveauFilter)}
+          
+          <TouchableOpacity style={styles.applyFilterButton} onPress={() => { applyFilters(); toggleFilters(); }}>
+            <Text style={styles.applyFilterButtonText}>Appliquer les filtres</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </Animated.View>
 
       <FlatList
-        data={formations}
+        data={filteredFormations}
         renderItem={renderFormationItem}
         keyExtractor={item => item.id}
         style={styles.list}
@@ -398,7 +292,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   applyFilterButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#1a53ff',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -414,7 +308,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 20,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#1a53ff',
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -459,6 +353,69 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     marginLeft: 10,
+  },
+  
+  filterToggleButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#1a53ff',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  filterToggleButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  filtersContainer: {
+    overflow: 'hidden',
+    marginBottom: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+  },
+  filterSection: {
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  filterTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  filterButton: {
+    backgroundColor: 'white',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    margin: 4,
+    borderWidth: 1,
+    borderColor: '#1a53ff',
+  },
+  filterButtonSelected: {
+    backgroundColor: '#1a53ff',
+  },
+  filterButtonText: {
+    color: '#1a53ff',
+  },
+  filterButtonTextSelected: {
+    color: 'white',
+  },
+  applyFilterButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+    marginHorizontal: 10,
+  },
+  applyFilterButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 

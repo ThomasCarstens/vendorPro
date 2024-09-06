@@ -3,6 +3,8 @@ import { View, Text, TextInput, Switch, ScrollView, StyleSheet, TouchableOpacity
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
+const TABS = ['Etudiant', 'Formateur', 'Rejete par l\'admin'];
+
 const ProfileScreen = () => {
   const [activeTab, setActiveTab] = useState('Etudiant');
   const [isEditing, setIsEditing] = useState(false);
@@ -16,18 +18,16 @@ const ProfileScreen = () => {
     etudiantDIU: false,
     anneeDIU: '',
   });
+
   const navigation = useNavigation();
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
       title: 'Mon profil',
-      headerStyle: {
-        backgroundColor: '#1a53ff',
-      },
+      headerStyle: { backgroundColor: '#1a53ff' },
       headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
+      headerTitleStyle: { fontWeight: 'bold' },
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.headerButton}>{'< Retour'}</Text>
@@ -35,9 +35,16 @@ const ProfileScreen = () => {
       ),
     });
   }, [navigation]);
+
+  const handleProfileChange = (key, value) => {
+    if (isEditing) {
+      setProfile(prevProfile => ({ ...prevProfile, [key]: value }));
+    }
+  };
+
   const renderTabs = () => (
     <View style={styles.tabContainer}>
-      {['Etudiant', 'Formateur', 'Rejete par l\'admin'].map((tab) => (
+      {TABS.map((tab) => (
         <TouchableOpacity
           key={tab}
           style={[styles.tab, activeTab === tab && styles.activeTab]}
@@ -49,139 +56,106 @@ const ProfileScreen = () => {
     </View>
   );
 
-  const renderContent = () => {
-    if (activeTab === 'Rejete par l\'admin') {
+  const renderRejectedContent = () => (
+    <View style={styles.rejectedContainer}>
+      <Text style={styles.rejectedText}>
+        Votre demande a été rejetée pour la raison suivante : 
+        {"\n\n"}
+        [Insérer la raison du rejet ici]
+        {"\n\n"}
+        Pour toute correspondance ultérieure, veuillez contacter admindumay@gmail.com
+      </Text>
+    </View>
+  );
+
+  const renderFormField = (label, key, type = 'text') => {
+    const props = {
+      style: [styles.input, !isEditing && styles.disabledInput],
+      value: profile[key],
+      onChangeText: (text) => handleProfileChange(key, text),
+      editable: isEditing,
+    };
+
+    if (type === 'switch') {
       return (
-        <View style={styles.rejectedContainer}>
-          <Text style={styles.rejectedText}>
-            Votre demande a été rejetée pour la raison suivante : 
-            {"\n\n"}
-            [Insérer la raison du rejet ici]
-            {"\n\n"}
-            Pour toute correspondance ultérieure, veuillez contacter admindumay@gmail.com
-          </Text>
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>{label}</Text>
+          <Switch
+            value={profile[key]}
+            onValueChange={(value) => handleProfileChange(key, value)}
+            disabled={!isEditing}
+          />
+        </View>
+      );
+    }
+
+    if (type === 'picker') {
+      return (
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>{label}</Text>
+          <Picker
+            selectedValue={profile[key]}
+            onValueChange={(itemValue) => handleProfileChange(key, itemValue)}
+            style={[styles.picker, !isEditing && styles.disabledPicker]}
+            enabled={isEditing}
+          >
+            <Picker.Item label="Sélectionnez une année" value="" />
+            <Picker.Item label="1ère année" value="1" />
+            <Picker.Item label="2ème année" value="2" />
+            <Picker.Item label="3ème année" value="3" />
+          </Picker>
         </View>
       );
     }
 
     return (
-      <ScrollView style={styles.formContainer}>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Médecin Diplômé</Text>
-          <Switch
-            value={profile.medecinDiplome}
-            onValueChange={(value) => isEditing && setProfile({ ...profile, medecinDiplome: value })}
-            disabled={!isEditing}
-          />
-        </View>
-
-        {profile.medecinDiplome && (
-          <>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Année de diplôme</Text>
-              <TextInput
-                style={[styles.input, !isEditing && styles.disabledInput]}
-                value={profile.anneeDiplome}
-                onChangeText={(text) => isEditing && setProfile({ ...profile, anneeDiplome: text })}
-                editable={isEditing}
-                keyboardType="numeric"
-              />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Faculté</Text>
-              <TextInput
-                style={[styles.input, !isEditing && styles.disabledInput]}
-                value={profile.faculte}
-                onChangeText={(text) => isEditing && setProfile({ ...profile, faculte: text })}
-                editable={isEditing}
-              />
-            </View>
-          </>
-        )}
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Fonction Enseignant</Text>
-          <TextInput
-            style={[styles.input, !isEditing && styles.disabledInput]}
-            value={profile.fonctionEnseignant}
-            onChangeText={(text) => isEditing && setProfile({ ...profile, fonctionEnseignant: text })}
-            editable={isEditing}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={[styles.input, !isEditing && styles.disabledInput]}
-            value={profile.email}
-            onChangeText={(text) => isEditing && setProfile({ ...profile, email: text })}
-            editable={isEditing}
-            keyboardType="email-address"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Numéro de téléphone</Text>
-          <TextInput
-            style={[styles.input, !isEditing && styles.disabledInput]}
-            value={profile.telephone}
-            onChangeText={(text) => isEditing && setProfile({ ...profile, telephone: text })}
-            editable={isEditing}
-            keyboardType="phone-pad"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Étudiant DIU</Text>
-          <Switch
-            value={profile.etudiantDIU}
-            onValueChange={(value) => isEditing && setProfile({ ...profile, etudiantDIU: value })}
-            disabled={!isEditing}
-          />
-        </View>
-
-        {profile.etudiantDIU && (
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Année DIU</Text>
-            <Picker
-              selectedValue={profile.anneeDIU}
-              onValueChange={(itemValue) => isEditing && setProfile({ ...profile, anneeDIU: itemValue })}
-              style={[styles.picker, !isEditing && styles.disabledPicker]}
-              enabled={isEditing}
-            >
-              <Picker.Item label="Sélectionnez une année" value="" />
-              <Picker.Item label="1ère année" value="1" />
-              <Picker.Item label="2ème année" value="2" />
-              <Picker.Item label="3ème année" value="3" />
-            </Picker>
-          </View>
-        )}
-
-        <TouchableOpacity
-          style={styles.modifyButton}
-          onPress={() => setIsEditing(!isEditing)}
-        >
-          <Text style={styles.modifyButtonText}>
-            {isEditing ? 'Sauvegarder' : 'Modifier'}
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.confidentialText}>
-          Ces informations restent confidentielles.
-        </Text>
-      </ScrollView>
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>{label}</Text>
+        <TextInput {...props} keyboardType={type === 'number' ? 'numeric' : 'default'} />
+      </View>
     );
   };
+
+  const renderProfileForm = () => (
+    <ScrollView style={styles.formContainer}>
+      {renderFormField('Médecin Diplômé', 'medecinDiplome', 'switch')}
+      {profile.medecinDiplome && (
+        <>
+          {renderFormField('Année de diplôme', 'anneeDiplome', 'number')}
+          {renderFormField('Faculté', 'faculte')}
+        </>
+      )}
+      {renderFormField('Fonction Enseignant', 'fonctionEnseignant')}
+      {renderFormField('Email', 'email')}
+      {renderFormField('Numéro de téléphone', 'telephone')}
+      {renderFormField('Étudiant DIU', 'etudiantDIU', 'switch')}
+      {profile.etudiantDIU && renderFormField('Année DIU', 'anneeDIU', 'picker')}
+
+      <TouchableOpacity
+        style={styles.modifyButton}
+        onPress={() => setIsEditing(!isEditing)}
+      >
+        <Text style={styles.modifyButtonText}>
+          {isEditing ? 'Sauvegarder' : 'Modifier'}
+        </Text>
+      </TouchableOpacity>
+
+      <Text style={styles.confidentialText}>
+        Ces informations restent confidentielles.
+      </Text>
+    </ScrollView>
+  );
 
   return (
     <View style={styles.container}>
       {renderTabs()}
-      {renderContent()}
+      {activeTab === 'Rejete par l\'admin' ? renderRejectedContent() : renderProfileForm()}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
   headerButton: {
     color: 'white',
     fontSize: 16,
