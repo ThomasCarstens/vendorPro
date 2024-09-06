@@ -68,6 +68,16 @@ const ProfileScreen = () => {
     </View>
   );
 
+  const renderStudentMessage = () => (
+    <View style={styles.studentMessageContainer}>
+      <Text style={styles.studentMessageText}>
+        Les étudiants n'ont pas de profil spécifique dans notre système. Vos informations sont recueillies lors de votre inscription à une formation.
+        {"\n\n"}
+        Pour vous inscrire à une formation ou consulter les formations disponibles, veuillez utiliser les options correspondantes dans le menu principal.
+      </Text>
+    </View>
+  );
+
   const renderFormField = (label, key, type = 'text') => {
     const props = {
       style: [styles.input, !isEditing && styles.disabledInput],
@@ -149,7 +159,9 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       {renderTabs()}
-      {activeTab === 'Rejete par l\'admin' ? renderRejectedContent() : renderProfileForm()}
+      {activeTab === 'Etudiant' && renderStudentMessage()}
+      {activeTab === 'Formateur' && renderProfileForm()}
+      {activeTab === 'Rejete par l\'admin' && renderRejectedContent()}
     </View>
   );
 };
@@ -244,6 +256,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  studentMessageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f0f8ff', // Light blue background
+  },
+  studentMessageText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#333',
+    lineHeight: 24,
   },
 });
 
