@@ -12,10 +12,8 @@ const AjoutFormationScreen = ({ navigation, route }) => {
     active: true,
     date: new Date(),
     image: 'https://via.placeholder.com/150',
-    // keywords: [],
     category: '',
     lieu: '',
-    niveau: '',
     status: 'propose',
     heureDebut: new Date(),
     heureFin: new Date(),
@@ -24,6 +22,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
     tarifEtudiant: '',
     tarifMedecin: '',
     domaine: '',
+    autresDomaine: '',
     affiliationDIU: '',
     competencesAcquises: '',
     prerequis: '',
@@ -33,6 +32,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const existingFormation = route.params?.formation;
@@ -40,9 +40,8 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       setFormData({
         ...existingFormation,
         date: new Date(existingFormation.date),
-        heureDebut: new Date(`2000-01-01T${existingFormation.heureDebut}`),
-        heureFin: new Date(`2000-01-01T${existingFormation.heureFin}`),
-        // keywords: existingFormation.keywords.join(', '),
+        heureDebut: new Date(existingFormation.heureDebut),
+        heureFin: new Date(existingFormation.heureFin),
       });
     }
   }, [route.params?.formation]);
@@ -52,6 +51,13 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       ...prevState,
       [name]: value
     }));
+    // Clear error for this field if it exists
+    if (errors[name]) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: null
+      }));
+    }
   };
 
   const handleDateChange = (event, selectedDate) => {
@@ -73,8 +79,36 @@ const AjoutFormationScreen = ({ navigation, route }) => {
   };
 
   const validateForm = () => {
-    // Add validation logic here
-    return true;
+    let isValid = true;
+    let newErrors = {};
+
+    // Check required fields
+    const requiredFields = ['title', 'date', 'heureDebut', 'heureFin', 'lieu', 'nature', 'anneeConseillee', 'tarifEtudiant', 'tarifMedecin', 'domaine', 'affiliationDIU'];
+    requiredFields.forEach(field => {
+      if (!formData[field]) {
+        newErrors[field] = 'Ce champ est obligatoire';
+        isValid = false;
+      }
+    });
+
+    // Check if 'autresDomaine' is filled when 'domaine' is 'Autres'
+    if (formData.domaine === 'Autres' && !formData.autresDomaine) {
+      newErrors.autresDomaine = 'Veuillez spécifier le domaine';
+      isValid = false;
+    }
+
+    // Validate numeric fields
+    if (isNaN(Number(formData.tarifEtudiant)) || formData.tarifEtudiant === '') {
+      newErrors.tarifEtudiant = 'Le tarif doit être un nombre';
+      isValid = false;
+    }
+    if (isNaN(Number(formData.tarifMedecin)) || formData.tarifMedecin === '') {
+      newErrors.tarifMedecin = 'Le tarif doit être un nombre';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = () => {
@@ -96,17 +130,14 @@ const AjoutFormationScreen = ({ navigation, route }) => {
         ]
       );
     } else {
-      Alert.alert("Erreur", "Veuillez remplir tous les champs obligatoires.");
+      Alert.alert("Erreur", "Veuillez remplir correctement tous les champs obligatoires.");
     }
   };
 
   const uploadToFirebase = () => {
     const formattedData = {
       ...formData,
-      // date: formData.date.toISOString().split('T')[0],
-      // heureDebut: formData.heureDebut.toTimeString().split(' ')[0].slice(0, 5),
-      // heureFin: formData.heureFin.toTimeString().split(' ')[0].slice(0, 5),
-      // active: true
+      domaine: formData.domaine === 'Autres' ? formData.autresDomaine : formData.domaine,
     };
 
     set(ref_d(database, `formations/${formData.id}`), formattedData)
@@ -122,24 +153,36 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       });
   };
 
+  const renderInput = (label, name, placeholder, keyboardType = 'default', multiline = false) => (
+    <View>
+      <Text style={styles.label}>{label} {requiredFields.includes(name) ? '*' : ''}</Text>
+      <TextInput
+        style={[styles.input, errors[name] && styles.inputError, multiline && styles.multilineInput]}
+        value={formData[name]}
+        onChangeText={(text) => handleInputChange(name, text)}
+        placeholder={placeholder}
+        keyboardType={keyboardType}
+        multiline={multiline}
+      />
+      {errors[name] && <Text style={styles.errorText}>{errors[name]}</Text>}
+    </View>
+  );
+
+  const requiredFields = ['title', 'date', 'heureDebut', 'heureFin', 'lieu', 'nature', 'anneeConseillee', 'tarifEtudiant', 'tarifMedecin', 'domaine', 'affiliationDIU'];
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>
         {route.params?.formation ? "Modifier la formation" : "Ajouter une nouvelle formation"}
       </Text>
 
-      <Text style={styles.label}>Titre *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.title}
-        onChangeText={(text) => handleInputChange('title', text)}
-        placeholder="Titre de la formation"
-      />
+      {renderInput('Titre', 'title', 'Titre de la formation')}
 
       <Text style={styles.label}>Date *</Text>
-      <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+      <TouchableOpacity style={[styles.input, errors.date && styles.inputError]} onPress={() => setShowDatePicker(true)}>
         <Text>{formData.date.toLocaleDateString()}</Text>
       </TouchableOpacity>
+      {errors.date && <Text style={styles.errorText}>{errors.date}</Text>}
       {showDatePicker && (
         <DateTimePicker
           value={formData.date}
@@ -150,9 +193,10 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       )}
 
       <Text style={styles.label}>Heure de début *</Text>
-      <TouchableOpacity style={styles.input} onPress={() => setShowStartTimePicker(true)}>
+      <TouchableOpacity style={[styles.input, errors.heureDebut && styles.inputError]} onPress={() => setShowStartTimePicker(true)}>
         <Text>{formData.heureDebut.toLocaleTimeString().slice(0, 5)}</Text>
       </TouchableOpacity>
+      {errors.heureDebut && <Text style={styles.errorText}>{errors.heureDebut}</Text>}
       {showStartTimePicker && (
         <DateTimePicker
           value={formData.heureDebut}
@@ -163,9 +207,10 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       )}
 
       <Text style={styles.label}>Heure de fin *</Text>
-      <TouchableOpacity style={styles.input} onPress={() => setShowEndTimePicker(true)}>
+      <TouchableOpacity style={[styles.input, errors.heureFin && styles.inputError]} onPress={() => setShowEndTimePicker(true)}>
         <Text>{formData.heureFin.toLocaleTimeString().slice(0, 5)}</Text>
       </TouchableOpacity>
+      {errors.heureFin && <Text style={styles.errorText}>{errors.heureFin}</Text>}
       {showEndTimePicker && (
         <DateTimePicker
           value={formData.heureFin}
@@ -175,52 +220,16 @@ const AjoutFormationScreen = ({ navigation, route }) => {
         />
       )}
 
-      <Text style={styles.label}>Lieu *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.lieu}
-        onChangeText={(text) => handleInputChange('lieu', text)}
-        placeholder="Lieu de la formation"
-      />
-
-      <Text style={styles.label}>Nature de la formation *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.nature}
-        onChangeText={(text) => handleInputChange('nature', text)}
-        placeholder="Nature de la formation"
-      />
-
-      <Text style={styles.label}>Année conseillée *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.anneeConseillee}
-        onChangeText={(text) => handleInputChange('anneeConseillee', text)}
-        placeholder="Année conseillée"
-      />
-
-      <Text style={styles.label}>Tarif étudiant DIU *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.tarifEtudiant}
-        onChangeText={(text) => handleInputChange('tarifEtudiant', text)}
-        placeholder="Tarif étudiant DIU"
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.label}>Tarif médecin *</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.tarifMedecin}
-        onChangeText={(text) => handleInputChange('tarifMedecin', text)}
-        placeholder="Tarif médecin"
-        keyboardType="numeric"
-      />
+      {renderInput('Lieu', 'lieu', 'Lieu de la formation')}
+      {renderInput('Nature de la formation', 'nature', 'Nature de la formation')}
+      {renderInput('Année conseillée', 'anneeConseillee', 'Année conseillée')}
+      {renderInput('Tarif étudiant DIU', 'tarifEtudiant', 'Tarif étudiant DIU', 'numeric')}
+      {renderInput('Tarif médecin', 'tarifMedecin', 'Tarif médecin', 'numeric')}
 
       <Text style={styles.label}>Domaine *</Text>
       <Picker
         selectedValue={formData.domaine}
-        style={styles.picker}
+        style={[styles.picker, errors.domaine && styles.inputError]}
         onValueChange={(itemValue) => handleInputChange('domaine', itemValue)}
       >
         <Picker.Item label="Sélectionnez un domaine" value="" />
@@ -231,11 +240,14 @@ const AjoutFormationScreen = ({ navigation, route }) => {
         <Picker.Item label="Médecine Physique" value="Médecine Physique" />
         <Picker.Item label="Autres" value="Autres" />
       </Picker>
+      {errors.domaine && <Text style={styles.errorText}>{errors.domaine}</Text>}
+
+      {formData.domaine === 'Autres' && renderInput('Spécifier le domaine', 'autresDomaine', 'Spécifier le domaine')}
 
       <Text style={styles.label}>Affiliation DIU Université *</Text>
       <Picker
         selectedValue={formData.affiliationDIU}
-        style={styles.picker}
+        style={[styles.picker, errors.affiliationDIU && styles.inputError]}
         onValueChange={(itemValue) => handleInputChange('affiliationDIU', itemValue)}
       >
         <Picker.Item label="Sélectionnez une affiliation" value="" />
@@ -256,67 +268,24 @@ const AjoutFormationScreen = ({ navigation, route }) => {
         <Picker.Item label="Toulouse" value="Toulouse" />
         <Picker.Item label="Tours" value="Tours" />
       </Picker>
+      {errors.affiliationDIU && <Text style={styles.errorText}>{errors.affiliationDIU}</Text>}
 
-      <Text style={styles.label}>Catégorie</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.category}
-        onChangeText={(text) => handleInputChange('category', text)}
-        placeholder="Catégorie de la formation"
-      />
-
-      <Text style={styles.label}>Niveau</Text>
-      <Picker
-        selectedValue={formData.niveau}
-        style={styles.picker}
-        onValueChange={(itemValue) => handleInputChange('niveau', itemValue)}
-      >
-        <Picker.Item label="Sélectionnez un niveau" value="" />
-        <Picker.Item label="Débutant" value="Débutant" />
-        <Picker.Item label="Intermédiaire" value="Intermédiaire" />
-        <Picker.Item label="Avancé" value="Avancé" />
-      </Picker>
-
-      {/* <Text style={styles.label}>Mots-clés</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.keywords}
-        onChangeText={(text) => handleInputChange('keywords', text)}
-        placeholder="Mots-clés séparés par des virgules"
-      /> */}
-
-      <Text style={styles.label}>Compétences acquises</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.competencesAcquises}
-        onChangeText={(text) => handleInputChange('competencesAcquises', text)}
-        placeholder="Compétences acquises"
-        multiline
-      />
-
-      <Text style={styles.label}>Prérequis</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.prerequis}
-        onChangeText={(text) => handleInputChange('prerequis', text)}
-        placeholder="Prérequis"
-        multiline
-      />
-
-      <Text style={styles.label}>Instructions</Text>
-      <TextInput
-        style={styles.input}
-        value={formData.instructions}
-        onChangeText={(text) => handleInputChange('instructions', text)}
-        placeholder="Instructions"
-        multiline
-      />
+      {renderInput('Catégorie', 'category', 'Catégorie de la formation')}
+      {renderInput('Compétences acquises', 'competencesAcquises', 'Compétences acquises', 'default', true)}
+      {renderInput('Prérequis', 'prerequis', 'Prérequis', 'default', true)}
+      {renderInput('Instructions', 'instructions', 'Instructions', 'default', true)}
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>
           {route.params?.formationId ? "Modifier la formation" : "Ajouter la formation"}
         </Text>
       </TouchableOpacity>
+
+      {Object.keys(errors).length > 0 && (
+        <Text style={styles.errorSummary}>
+          Veuillez corriger les erreurs ci-dessus avant de soumettre le formulaire.
+        </Text>
+      )}
     </ScrollView>
   );
 };
@@ -345,6 +314,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  multilineInput: {
+    height: 100,
+    textAlignVertical: 'top',
   },
   picker: {
     borderWidth: 1,
