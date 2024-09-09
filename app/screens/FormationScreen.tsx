@@ -83,13 +83,6 @@ const FormationScreen = ({ route, navigation }) => {
       <Text style={styles.sectionTitle}>Catégorie</Text>
       <Text style={styles.text}>{formation.category}</Text>
       
-      <Text style={styles.sectionTitle}>Mots-clés</Text>
-      <View style={styles.keywordsContainer}>
-        {formation.keywords.map((keyword, index) => (
-          <Text key={index} style={styles.keyword}>{keyword}</Text>
-        ))}
-      </View>
-      
       <Text style={styles.sectionTitle}>Compétences acquises</Text>
       <Text style={styles.text}>{formation.competencesAcquises}</Text>
       
@@ -167,18 +160,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 10,
-  },
-  keywordsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 10,
-  },
-  keyword: {
-    backgroundColor: '#e0e0e0',
-    padding: 5,
-    marginRight: 5,
-    marginBottom: 5,
-    borderRadius: 3,
   },
 });
 

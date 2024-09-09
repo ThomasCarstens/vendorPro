@@ -29,7 +29,10 @@ const RechercheFormationsScreen = (props, { route }) => {
   useEffect(() => {
     fetchFormations();
   }, []);
-
+  useEffect(() => {
+    applyFilters(activeTab)
+  }, [formations]);
+  
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -117,8 +120,7 @@ const RechercheFormationsScreen = (props, { route }) => {
     }
 
     if (tab === "J'y suis inscrit") {
-      filtered = filtered.filter(f => {
-        (f.status === 'inscrit')});
+      filtered = filtered.filter(f => (f.status === 'inscrit'));
     } else if (tab === 'Je propose') {
       filtered = filtered.filter(f => (f.status === 'propose'));
     } else if (tab === 'Corbeille') {
@@ -169,11 +171,6 @@ const RechercheFormationsScreen = (props, { route }) => {
       <Text>Année conseillée: {item.anneeConseillee}</Text>
       <Text>Tarif étudiant DIU: {item.tarifEtudiant} €</Text>
       <Text>Tarif médecin: {item.tarifMedecin} €</Text>
-      <View style={styles.keywordsContainer}>
-        {item.keywords.map((keyword, index) => (
-          <Text key={index} style={styles.keyword}>{keyword}</Text>
-        ))}
-      </View>
     </TouchableOpacity>
   );
 
@@ -324,18 +321,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-  },
-  keywordsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 5,
-  },
-  keyword: {
-    backgroundColor: '#e0e0e0',
-    padding: 5,
-    marginRight: 5,
-    marginBottom: 5,
-    borderRadius: 3,
   },
   formationItem: {
     marginBottom: 20,

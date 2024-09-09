@@ -11,7 +11,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
     title: '',
     date: new Date(),
     image: 'https://via.placeholder.com/150',
-    keywords: [],
+    // keywords: [],
     category: '',
     lieu: '',
     niveau: '',
@@ -41,7 +41,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
         date: new Date(existingFormation.date),
         heureDebut: new Date(`2000-01-01T${existingFormation.heureDebut}`),
         heureFin: new Date(`2000-01-01T${existingFormation.heureFin}`),
-        keywords: existingFormation.keywords.join(', '),
+        // keywords: existingFormation.keywords.join(', '),
       });
     }
   }, [route.params?.formation]);
@@ -105,7 +105,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       date: formData.date.toISOString().split('T')[0],
       heureDebut: formData.heureDebut.toTimeString().split(' ')[0].slice(0, 5),
       heureFin: formData.heureFin.toTimeString().split(' ')[0].slice(0, 5),
-      keywords: formData.keywords.split(',').map(k => k.trim()),
+      // keywords: formData.keywords.split(',').map(k => k.trim()),
     };
 
     set(ref_d(database, `formations/${formData.id}`), formattedData)
@@ -276,13 +276,13 @@ const AjoutFormationScreen = ({ navigation, route }) => {
         <Picker.Item label="Avancé" value="Avancé" />
       </Picker>
 
-      <Text style={styles.label}>Mots-clés</Text>
+      {/* <Text style={styles.label}>Mots-clés</Text>
       <TextInput
         style={styles.input}
         value={formData.keywords}
         onChangeText={(text) => handleInputChange('keywords', text)}
         placeholder="Mots-clés séparés par des virgules"
-      />
+      /> */}
 
       <Text style={styles.label}>Compétences acquises</Text>
       <TextInput
