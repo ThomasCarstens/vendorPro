@@ -4,34 +4,53 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 const LoginScreen = ({ navigation }) => {
   const renderButton = (title, phase, phaseName, onPress) => (
     <TouchableOpacity
-      style={styles.button}
+      style={[styles.button, styles.buttonShadow]}
       onPress={onPress}
     >
       <Text style={styles.buttonTitle}>{title}</Text>
-      <Text style={styles.buttonPhase}>{`                 Pour ${phase} `}</Text>
+      <Text style={styles.buttonPhase}>{` ${phase} `}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../assets/images/icon.png')}
-        style={styles.logo}
-      />
-      <Text style={styles.versionText}>Version « structurelle » </Text>
+      <Image source={require('../../assets/images/icon.png')} style={styles.logo} />
+      <View style={styles.titleContainer}>
+        <Text style={styles.appTitle}>Esculappl</Text>
+        <Text style={styles.appSlogan}>Appli de Formations de Médecine Manuelle</Text>
+      </View>
+      <Text style={styles.versionText}>Version « preparation de Phase 1 »</Text>
       <View style={styles.buttonContainer}>
+        <View style={styles.buttonRow}>
+        {renderButton(
+            "Vos formations",
+            "",
+            "Phase Etudiante",
+            () => navigation.navigate('RestrainedTabs')
+          )}
+          {renderButton(
+            "Accès Admin",
+            "",
+            "Phase Universitaire",
+            () => navigation.navigate('AdminTabs')
+          )}
+
+        </View>
+        {renderButton(
+          "Partenaires",
+          "",
+          "",
+          () => navigation.navigate('OrganizationsPartenaires')
+        )}
         {renderButton(
           "Accès Etudiant",
           "Phase 2",
           "Phase Etudiante",
           () => navigation.navigate('UserTabs')
         )}
-        {renderButton(
-          "Accès Admin",
-          "Phase 1",
-          "Phase Universitaire",
-          () => navigation.navigate('AdminTabs')
-        )}
+
+
+        <View style={styles.buttonRow}>
         {renderButton(
           "Accès Formateur",
           "Phase 3",
@@ -44,12 +63,8 @@ const LoginScreen = ({ navigation }) => {
           "Phase Formateurs inconnus",
           () => navigation.navigate('NewUserTabs')
         )}
-        {renderButton(
-          "Partenaires",
-          "Toutes phases",
-          "",
-          () => navigation.navigate('OrganizationsPartenaires')
-        )}
+
+        </View>
       </View>
     </View>
   );
@@ -66,33 +81,66 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 150,
-    marginBottom: 10,
+    marginBottom: 20,
+  },
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  appTitle: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  appSlogan: {
+    color: '#FFFFFF',
+    fontSize: 18,
   },
   versionText: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 30,
   },
   buttonContainer: {
     width: '100%',
+    alignItems: 'flex-start'
+    
+    
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
   },
   button: {
     backgroundColor: '#FFFFFF',
-    padding: 5,
+    padding: 10,
+    marginBottom: 10,
+    marginLeft: 10,
     borderRadius: 30,
     alignItems: 'center',
-    marginBottom: 15,
+    width: '48%',
+  },
+  buttonShadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonTitle: {
     color: '#00008B',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 5,
   },
   buttonPhase: {
     color: '#343432',
-    fontSize: 15,
-    fontStyle: "italic"
+    fontSize: 14,
+    fontStyle: "italic",
   },
 });
 

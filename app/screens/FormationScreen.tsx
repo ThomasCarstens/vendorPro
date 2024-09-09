@@ -24,16 +24,18 @@ const FormationScreen = ({ route, navigation }) => {
   }, [formationId]);
 
   const handleDelete = () => {
+    let toggleAction = (formation.active)?"Désactiver":"Réactiver"
     Alert.alert(
       "Confirmation",
-      "Êtes-vous sûr de vouloir désactiver cette formation ?",
+      `Êtes-vous sûr de vouloir ${toggleAction} cette formation ?`,
       [
         { text: "Annuler", style: "cancel" },
-        { text: "OK", onPress: () => {
+        { text: toggleAction, onPress: () => {
           const formationRef = ref_d(database, `/formations/${formationId}`);
-          set(formationRef, { ...formation, active: false })
+          set(formationRef, { ...formation, active: !(formation.active) })
             .then(() => {
-              Alert.alert("Succès", "La formation a été désactivée");
+              Alert.alert("Succès", `La formation a été ${toggleAction}`);
+              console.log(formation.active)
               navigation.goBack();
             })
             .catch((error) => {
@@ -74,7 +76,7 @@ const FormationScreen = ({ route, navigation }) => {
           style={styles.deleteButton}
           onPress={handleDelete}
         >
-          <Text style={styles.buttonText}>Supprimer</Text>
+          <Text style={styles.buttonText}>{(formation.active)?"Désactiver":"Réactiver"}</Text>
         </TouchableOpacity>
       </View>):(<View style={styles.buttonContainer}>
         <TouchableOpacity 

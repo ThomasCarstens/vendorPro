@@ -17,6 +17,7 @@ const RechercheFormationsScreen = (props, { route }) => {
   const [activeTab, setActiveTab] = useState('Visibles');
   const [isFormateur, setIsFormateur] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const filterHeight = useState(new Animated.Value(0))[0];
 
@@ -63,6 +64,12 @@ const RechercheFormationsScreen = (props, { route }) => {
       setIsAdmin(props.route.params.spoofAdmin);
     }
   }, [props.route.params?.spoofAdmin]);
+
+  useEffect(() => {
+    if (props.route.params?.spoofLoggedIn) {
+      setIsLoggedIn(props.route.params.spoofLoggedIn);
+    }
+  }, [props.route.params?.spoofLoggedIn]);
 
   const fetchFormations = () => {
     setLoading(true);
@@ -212,7 +219,8 @@ const RechercheFormationsScreen = (props, { route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
-        {(isFormateur?['Visibles', "J'y suis inscrit", 'Je propose', 'Corbeille']:['Visibles', "J'y suis inscrit"]).map((tab) => (
+        {(isFormateur?['Visibles', "J'y suis inscrit", 'Je propose', 'Corbeille']
+        :(isLoggedIn?['Visibles', "J'y suis inscrit"]:['Visibles'])).map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}
@@ -235,7 +243,7 @@ const RechercheFormationsScreen = (props, { route }) => {
         <ScrollView>
           {renderFilterButtons('Domaine', categoryOptions, categoryFilter, setCategoryFilter)}
           {renderFilterButtons('Lieu', lieuOptions, lieuFilter, setLieuFilter)}
-          {renderFilterButtons('Niveau', niveauOptions, niveauFilter, setNiveauFilter)}
+          {/* {renderFilterButtons('Niveau', niveauOptions, niveauFilter, setNiveauFilter)} */}
           
           <TouchableOpacity style={styles.applyFilterButton} onPress={() => { applyFilters(); toggleFilters(); }}>
             <Text style={styles.applyFilterButtonText}>Appliquer les filtres</Text>
@@ -341,12 +349,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  formationItem: {
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-  },
+  // formationItem: {
+  //   marginBottom: 20,
+  //   padding: 10,
+  //   backgroundColor: '#f0f0f0',
+  //   borderRadius: 5,
+  // },
   formationImage: {
     width: '100%',
     height: 150,
@@ -420,6 +428,20 @@ const styles = StyleSheet.create({
   applyFilterButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  formationItem: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#d5dcf0',
+    borderRadius: 10,
+    shadowColor: "orange",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
 });
 

@@ -89,7 +89,7 @@ function AdminTabs() {
       tabBarActiveTintColor: 'black',
       tabBarInactiveTintColor: 'white',
     })}>
-      <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: true, spoofAdmin: true, spoofValidated: true}} />
+      <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofLoggedIn: false, spoofFormateur: true, spoofAdmin: true, spoofValidated: true}} />
       <Tab.Screen name="Notifications" component={NotifsScreen} />
       <Tab.Screen name="DemandesProfils" component={DemandesProfilsScreen} />
     </Tab.Navigator>
@@ -151,7 +151,36 @@ function App() {
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'white',
       })}>
-        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
+        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofLoggedIn: true, spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
+        <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        {/* <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/> */}
+      </Tab.Navigator>
+    );
+  }
+
+  function RestrainedTabs() {
+    return (
+      <Tab.Navigator screenOptions={({ route }) => ({
+        tabBarStyle:  {
+          backgroundColor: '#1a53ff',
+      },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+  
+          if (route.name === 'RechercheFormations') {
+            iconName = focused ? 'search' : 'search';
+          } else if (route.name === 'Notifications') {
+            iconName = focused ? 'notifications-outline' : 'notifications-outline';
+          } else if (route.name === 'Profil') {
+            iconName = focused ? 'person' : 'person';
+          }
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'white',
+      })}>
+        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofLoggedIn: false, spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
         {/* <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/> */}
         {/* <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/> */}
       </Tab.Navigator>
@@ -180,7 +209,7 @@ function App() {
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'white',
       })}>
-        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: true, spoofAdmin: false, spoofValidated: true}}/>
+        <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofLoggedIn: true, spoofFormateur: true, spoofAdmin: false, spoofValidated: true}}/>
         <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
         <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/>
       </Tab.Navigator>
@@ -227,6 +256,8 @@ function App() {
         {/* tabs if FORMATEUR */}
         <Stack.Screen name="FormateurTabs" component={FormateurTabs} options={{ headerShown: false }}  />
         
+        {/* Restrained Functionality */}
+        <Stack.Screen name="RestrainedTabs"            component={RestrainedTabs} options={{ headerShown: false }}  />
 
         <Stack.Screen name="UnderConstruction" component={UnderConstructionScreen} />
       </Stack.Navigator>
