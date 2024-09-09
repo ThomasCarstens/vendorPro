@@ -32,25 +32,35 @@ const Tab = createBottomTabNavigator();
 
 function NewUserTabs() {
   return (
-    <Tab.Navigator screenOptions={({ route }) => ({
-
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
-
-        if (route.name === 'Inscription') {
-          iconName = focused ? 'search' : 'search';
-        } else if (route.name === 'Notifications') {
-          iconName = focused ? 'notifications-outline' : 'notifications-outline';
-        } else if (route.name === 'Profil') {
-          iconName = focused ? 'person' : 'person';
-        }
-        // You can return any component that you like here!
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-      tabBarActiveTintColor: 'tomato',
-      tabBarInactiveTintColor: '#1eaae6',
-    })}>
-      <Tab.Screen name="Inscription" component={InscriptionScreen}  />
+    <Tab.Navigator 
+      screenOptions={({ route }) => ({
+        tabBarStyle: {
+          backgroundColor: '#1a53ff',
+          height: 70, // Increased height to accommodate larger text
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === 'Inscription') {
+            iconName = focused ? 'search' : 'search';
+          } else if (route.name === 'Notifications') {
+            iconName = focused ? 'notifications-outline' : 'notifications-outline';
+          } else if (route.name === 'Profil') {
+            iconName = focused ? 'person' : 'person';
+          }
+          return <Ionicons name={iconName} size={30} color={color} />;
+        },
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'white',
+        tabBarLabelStyle: {
+          fontSize: 16, // Increased font size
+          fontWeight: 'bold', // Added bold font weight for better visibility
+        },
+        tabBarIconStyle: {
+          marginTop: 5, // Added some top margin to the icon for better spacing
+        },
+      })}
+    >
+      <Tab.Screen name="Inscription" component={InscriptionScreen} />
       <Tab.Screen name="Notifications" component={NotifsScreen} />
       <Tab.Screen name="Profil" component={ProfilScreen} />
     </Tab.Navigator>
@@ -61,12 +71,7 @@ function AdminTabs() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
       tabBarStyle:  {
-        // height: 90,
-        // paddingHorizontal: 5,
-        // paddingTop: 0,
         backgroundColor: '#1a53ff',
-        // position: 'absolute',
-        // borderTopWidth: 0,
     },
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
@@ -127,11 +132,14 @@ function App() {
   function UserTabs() {
     return (
       <Tab.Navigator screenOptions={({ route }) => ({
+        tabBarStyle:  {
+          backgroundColor: '#1a53ff',
+      },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
   
           if (route.name === 'RechercheFormations') {
-            iconName = focused ? 'add-circle' : 'search';
+            iconName = focused ? 'search' : 'search';
           } else if (route.name === 'Notifications') {
             iconName = focused ? 'notifications-outline' : 'notifications-outline';
           } else if (route.name === 'Profil') {
@@ -140,8 +148,8 @@ function App() {
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: '#1eaae6',
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'white',
       })}>
         <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
         <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
@@ -153,11 +161,14 @@ function App() {
   function FormateurTabs() {
     return (
       <Tab.Navigator screenOptions={({ route }) => ({
+        tabBarStyle:  {
+          backgroundColor: '#1a53ff',
+      },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
   
           if (route.name === 'RechercheFormations') {
-            iconName = focused ? 'add-circle' : 'search';
+            iconName = focused ? 'search' : 'search';
           } else if (route.name === 'Notifications') {
             iconName = focused ? 'notifications-outline' : 'notifications-outline';
           } else if (route.name === 'Profil') {
@@ -166,8 +177,8 @@ function App() {
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: '#1eaae6',
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'white',
       })}>
         <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: true, spoofAdmin: false, spoofValidated: true}}/>
         <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
