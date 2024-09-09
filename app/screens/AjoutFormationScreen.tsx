@@ -12,7 +12,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
     active: true,
     date: new Date(),
     image: 'https://via.placeholder.com/150',
-    category: '',
+    // category: '',
     lieu: '',
     status: 'propose',
     heureDebut: new Date(),
@@ -222,6 +222,23 @@ const AjoutFormationScreen = ({ navigation, route }) => {
 
       {renderInput('Lieu', 'lieu', 'Lieu de la formation')}
       {renderInput('Nature de la formation', 'nature', 'Nature de la formation')}
+      <Text style={styles.label}>Type de formation *</Text>
+      <Picker
+        selectedValue={formData.nature}
+        style={[styles.picker, errors.nature && styles.inputError]}
+        onValueChange={(itemValue) => handleInputChange('nature', itemValue)}
+      >
+        <Picker.Item label="Sélectionnez un type de formation" value="" />
+        <Picker.Item label="Séminaire pratique" value="Séminaire pratique" />
+        <Picker.Item label="Séminaire" value="Séminaire" />
+        <Picker.Item label="Formation spécialisée" value="Formation spécialisée" />
+        <Picker.Item label="Atelier pratique" value="Atelier pratique" />
+        <Picker.Item label="Autre" value="Autre" />
+      </Picker>
+      {errors.nature && <Text style={styles.errorText}>{errors.nature}</Text>}
+
+      {formData.nature === 'Autre' && renderInput('Spécifier le type de formation', 'nature', 'Spécifier le type de formation')}
+
       {renderInput('Année conseillée', 'anneeConseillee', 'Année conseillée')}
       {renderInput('Tarif étudiant DIU', 'tarifEtudiant', 'Tarif étudiant DIU', 'numeric')}
       {renderInput('Tarif médecin', 'tarifMedecin', 'Tarif médecin', 'numeric')}
@@ -238,11 +255,12 @@ const AjoutFormationScreen = ({ navigation, route }) => {
         <Picker.Item label="Médecine Manuelle" value="Médecine Manuelle" />
         <Picker.Item label="Rhumatologie" value="Rhumatologie" />
         <Picker.Item label="Médecine Physique" value="Médecine Physique" />
-        <Picker.Item label="Autres" value="Autres" />
+        <Picker.Item label="Autre" value="Autre" />
       </Picker>
+
       {errors.domaine && <Text style={styles.errorText}>{errors.domaine}</Text>}
 
-      {formData.domaine === 'Autres' && renderInput('Spécifier le domaine', 'autresDomaine', 'Spécifier le domaine')}
+      {formData.domaine === 'Autre' && renderInput('Spécifier le domaine', 'domaine', 'Spécifier le domaine')}
 
       <Text style={styles.label}>Affiliation DIU Université *</Text>
       <Picker
@@ -270,7 +288,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       </Picker>
       {errors.affiliationDIU && <Text style={styles.errorText}>{errors.affiliationDIU}</Text>}
 
-      {renderInput('Catégorie', 'category', 'Catégorie de la formation')}
+      {/* {renderInput('Catégorie', 'category', 'Catégorie de la formation')} */}
       {renderInput('Compétences acquises', 'competencesAcquises', 'Compétences acquises', 'default', true)}
       {renderInput('Prérequis', 'prerequis', 'Prérequis', 'default', true)}
       {renderInput('Instructions', 'instructions', 'Instructions', 'default', true)}

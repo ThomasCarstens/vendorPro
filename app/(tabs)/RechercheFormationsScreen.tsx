@@ -89,7 +89,7 @@ const RechercheFormationsScreen = (props, { route }) => {
   };
 
   const updateFilterOptions = (formationsArray) => {
-    const categories = [...new Set(formationsArray.map(f => f.category))];
+    const categories = [...new Set(formationsArray.map(f => f.domaine))];
     const lieux = [...new Set(formationsArray.map(f => f.lieu))];
     const niveaux = [...new Set(formationsArray.map(f => f.niveau))];
 
@@ -98,6 +98,25 @@ const RechercheFormationsScreen = (props, { route }) => {
     setNiveauOptions(niveaux);
   };
 
+  const renderAppliedFilters = () => {
+    const appliedFilters = [];
+    if (categoryFilter) appliedFilters.push({ type: 'Domaine', value: categoryFilter });
+    if (lieuFilter) appliedFilters.push({ type: 'Lieu', value: lieuFilter });
+    if (niveauFilter) appliedFilters.push({ type: 'Niveau', value: niveauFilter });
+  
+    return (
+      <View style={styles.appliedFiltersContainer}>
+        {appliedFilters.map((filter, index) => (
+          <View key={index} style={styles.appliedFilterItem}>
+            <Text style={styles.appliedFilterText}>{filter.type}: {filter.value}</Text>
+            <TouchableOpacity onPress={() => removeFilter(filter.type)}>
+              <Ionicons name="close-circle" size={20} color="#1a53ff" />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    );
+  };
   const toggleFilters = () => {
     setShowFilters(!showFilters);
     Animated.timing(filterHeight, {
@@ -214,7 +233,7 @@ const RechercheFormationsScreen = (props, { route }) => {
 
       <Animated.View style={[styles.filtersContainer, { height: filterHeight }]}>
         <ScrollView>
-          {renderFilterButtons('Catégorie', categoryOptions, categoryFilter, setCategoryFilter)}
+          {renderFilterButtons('Domaine', categoryOptions, categoryFilter, setCategoryFilter)}
           {renderFilterButtons('Lieu', lieuOptions, lieuFilter, setLieuFilter)}
           {renderFilterButtons('Niveau', niveauOptions, niveauFilter, setNiveauFilter)}
           

@@ -152,7 +152,7 @@ function App() {
         tabBarInactiveTintColor: 'white',
       })}>
         <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
-        <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        {/* <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/> */}
         {/* <Tab.Screen name="Profil" component={ProfilScreen} initialParams={{"gameFileContext": gameFileContext}}/> */}
       </Tab.Navigator>
     );
