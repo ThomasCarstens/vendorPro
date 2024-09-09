@@ -9,6 +9,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
   const [formData, setFormData] = useState({
     id: Date.now().toString(),
     title: '',
+    active: true,
     date: new Date(),
     image: 'https://via.placeholder.com/150',
     // keywords: [],
@@ -102,10 +103,10 @@ const AjoutFormationScreen = ({ navigation, route }) => {
   const uploadToFirebase = () => {
     const formattedData = {
       ...formData,
-      date: formData.date.toISOString().split('T')[0],
-      heureDebut: formData.heureDebut.toTimeString().split(' ')[0].slice(0, 5),
-      heureFin: formData.heureFin.toTimeString().split(' ')[0].slice(0, 5),
-      // keywords: formData.keywords.split(',').map(k => k.trim()),
+      // date: formData.date.toISOString().split('T')[0],
+      // heureDebut: formData.heureDebut.toTimeString().split(' ')[0].slice(0, 5),
+      // heureFin: formData.heureFin.toTimeString().split(' ')[0].slice(0, 5),
+      // active: true
     };
 
     set(ref_d(database, `formations/${formData.id}`), formattedData)

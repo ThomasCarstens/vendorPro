@@ -160,7 +160,7 @@ const RechercheFormationsScreen = (props, { route }) => {
   const renderFormationItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.formationItem} 
-      onPress={() => navigation.navigate('Formation', { formationId: item.id })}
+      onPress={() => navigation.navigate('Formation', { formationId: item.id, role: {isAdmin: isAdmin, isFormateur: isFormateur} })}
     >
       <Image source={{ uri: item.image }} style={styles.formationImage} />
       <Text style={styles.formationTitle}>{item.title}</Text>

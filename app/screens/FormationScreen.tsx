@@ -4,7 +4,8 @@ import { auth, firebase, storage, database } from '../../firebase';
 import { ref as ref_d, set, get, onValue } from 'firebase/database';
 
 const FormationScreen = ({ route, navigation }) => {
-  const { formationId } = route.params;
+  const { formationId, role } = route.params;
+  console.log(role)
   const [formation, setFormation] = useState(null);
 
   useEffect(() => {
@@ -55,7 +56,8 @@ const FormationScreen = ({ route, navigation }) => {
     <ScrollView style={styles.container}>
       <Image source={{ uri: formation.image }} style={styles.image} />
       <Text style={styles.title}>{formation.title}</Text>
-      <View style={styles.buttonContainer}>
+      {(role.isAdmin===true)? (
+        <View style={styles.buttonContainer}>
         <TouchableOpacity 
           style={styles.signUpButton}
           onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
@@ -64,7 +66,7 @@ const FormationScreen = ({ route, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.modifyButton}
-          onPress={() => navigation.navigate('AjoutFormation', { formation: formation })}
+          onPress={() => navigation.navigate('AjoutFormation', { formation: formation, role: role })}
         >
           <Text style={styles.buttonText}>Modifier</Text>
         </TouchableOpacity>
@@ -74,7 +76,13 @@ const FormationScreen = ({ route, navigation }) => {
         >
           <Text style={styles.buttonText}>Supprimer</Text>
         </TouchableOpacity>
-      </View>
+      </View>):(<View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={styles.signUpButton}
+          onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
+        >
+          <Text style={styles.signUpButtonText}>S'inscrire</Text>
+        </TouchableOpacity></View>)}
       <Text style={styles.info}>Date: {formation.date}</Text>
       <Text style={styles.info}>Lieu: {formation.lieu}</Text>
       <Text style={styles.info}>Niveau: {formation.niveau}</Text>
