@@ -26,6 +26,7 @@ import FormationScreen from './screens/FormationScreen';
 import OrganizationsPartenairesScreen from './screens/OrganizationsPartenairesScreen';
 import InscriptionFormationScreen from './screens/InscriptionFormationScreen';
 import ValidationProfilScreen from './screens/ValidationProfilScreen';
+import AjoutFormateurScreen from './screens/AjoutFormateurScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -246,6 +247,7 @@ function App() {
         {/* tabs if ADMIN */}
         <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }}  />
         <Stack.Screen name="ValidationProfil" component={ValidationProfilScreen} />
+        <Stack.Screen name="AjoutFormateur"       component={AjoutFormateurScreen} />
 
         {/* tabs if NEW */}
         <Stack.Screen name="NewUserTabs" component={NewUserTabs} options={{ headerShown: false }} />

@@ -154,6 +154,14 @@ const FormateursProfileList = ({ navigation }) => {
         ))}
       </View>
       <ProfileList status={activeTab} navigation={navigation} />
+      {/* {isFormateur && ( */}
+            <TouchableOpacity 
+              style={styles.newFormationButton}
+              onPress={() => navigation.navigate('AjoutFormateur')}
+            >
+              <Text style={styles.newFormationButtonText}>+</Text>
+            </TouchableOpacity>
+
     </View>
   );
 };
@@ -205,6 +213,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     color: '#7f8c8d',
+  },
+  newFormationButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    backgroundColor: '#1a53ff',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  newFormationButtonText: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
 });
 

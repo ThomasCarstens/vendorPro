@@ -3,9 +3,9 @@ import { View, Text, TextInput, Switch, ScrollView, StyleSheet, TouchableOpacity
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
-const TABS = ['Etudiant', 'Formateur', 'Rejete par l\'admin'];
+const TABS = ['Etudiant', 'Formateur']; //['Etudiant', 'Formateur', 'Rejete par l\'admin'];
 
-const ProfileScreen = () => {
+const AjoutFormateurScreen = () => {
   const [activeTab, setActiveTab] = useState('Etudiant');
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -24,7 +24,7 @@ const ProfileScreen = () => {
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: 'Mon profil',
+      title: 'Ajout d\'un profil',
       headerStyle: { backgroundColor: '#1a53ff' },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
@@ -136,7 +136,7 @@ const ProfileScreen = () => {
         </>
       )}
       {renderFormField('Fonction Enseignant', 'fonctionEnseignant')}
-      {renderFormField('Email', 'email')}
+      {renderFormField('Email (une invitation sera envoyée)', 'email')}
       {renderFormField('Numéro de téléphone', 'telephone')}
       {renderFormField('Étudiant DIU', 'etudiantDIU', 'switch')}
       {profile.etudiantDIU && renderFormField('Année DIU', 'anneeDIU', 'picker')}
@@ -274,4 +274,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default AjoutFormateurScreen;
