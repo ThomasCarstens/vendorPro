@@ -53,54 +53,73 @@ const FormationScreen = ({ route, navigation }) => {
       </View>
     );
   }
-
   return (
     <ScrollView style={styles.container}>
       <Image source={{ uri: formation.image }} style={styles.image} />
       <Text style={styles.title}>{formation.title}</Text>
-      {(role.isAdmin===true)? (
+      {(role.isAdmin===true) ? (
         <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={styles.signUpButton}
-          onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
-        >
-          <Text style={styles.signUpButtonText}>S'inscrire</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.modifyButton}
-          onPress={() => navigation.navigate('AjoutFormation', { formation: formation, role: role })}
-        >
-          <Text style={styles.buttonText}>Modifier</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.deleteButton}
-          onPress={handleDelete}
-        >
-          <Text style={styles.buttonText}>{(formation.active)?"Désactiver":"Réactiver"}</Text>
-        </TouchableOpacity>
-      </View>):(<View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={styles.signUpButton}
-          onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
-        >
-          <Text style={styles.signUpButtonText}>S'inscrire</Text>
-        </TouchableOpacity></View>)}
+          <TouchableOpacity 
+            style={styles.signUpButton}
+            onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
+          >
+            <Text style={styles.signUpButtonText}>S'inscrire</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.modifyButton}
+            onPress={() => navigation.navigate('AjoutFormation', { formation: formation, role: role })}
+          >
+            <Text style={styles.buttonText}>Modifier</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.deleteButton}
+            onPress={handleDelete}
+          >
+            <Text style={styles.buttonText}>{(formation.active)?"Désactiver":"Réactiver"}</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.signUpButton}
+            onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
+          >
+            <Text style={styles.signUpButtonText}>S'inscrire</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <Text style={styles.info}>Date: {formation.date}</Text>
+      <Text style={styles.info}>Heure: {formation.heureDebut} - {formation.heureFin}</Text>
       <Text style={styles.info}>Lieu: {formation.lieu}</Text>
-      <Text style={styles.info}>Niveau: {formation.niveau}</Text>
-      <Text style={styles.info}>Prix: {formation.price} €</Text>
+      <Text style={styles.info}>Nature: {formation.nature}</Text>
+      <Text style={styles.info}>Tarif étudiant: {formation.tarifEtudiant} €</Text>
+      <Text style={styles.info}>Tarif médecin: {formation.tarifMedecin} €</Text>
       
-      <Text style={styles.sectionTitle}>Catégorie</Text>
-      <Text style={styles.text}>{formation.category}</Text>
-      
-      <Text style={styles.sectionTitle}>Compétences acquises</Text>
-      <Text style={styles.text}>{formation.competencesAcquises}</Text>
+      <Text style={styles.sectionTitle}>Domaine</Text>
+      <Text style={styles.text}>{formation.domaine}</Text>
       
       <Text style={styles.sectionTitle}>Prérequis</Text>
       <Text style={styles.text}>{formation.prerequis}</Text>
       
+      <Text style={styles.sectionTitle}>Compétences acquises</Text>
+      <Text style={styles.text}>{formation.competencesAcquises || "Non spécifié"}</Text>
+      
+
+      {/* <Text style={styles.sectionTitle}>Autres domaines</Text>
+      <Text style={styles.text}>{formation.autresDomaine || "Non spécifié"}</Text> */}
+      
+      <Text style={styles.sectionTitle}>Affiliation DIU</Text>
+      <Text style={styles.text}>{formation.affiliationDIU}</Text>
+      
+      <Text style={styles.sectionTitle}>Année conseillée</Text>
+      <Text style={styles.text}>{formation.anneeConseillee}</Text>
+      
+
+      
       <Text style={styles.sectionTitle}>Instructions</Text>
       <Text style={styles.text}>{formation.instructions}</Text>
+
+      <View style={styles.bottomSpacer} />
     </ScrollView>
   );
 };
@@ -109,6 +128,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
+  },
+  contentContainer: {
+    padding: 15,
+    paddingBottom: 30, // Add extra padding at the bottom
+  },
+  bottomSpacer: {
+    height: 50, // Adjust this value to increase or decrease the space at the bottom
   },
   image: {
     width: '100%',
@@ -127,14 +153,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signUpButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#1a53ff',
     padding: 10,
     borderRadius: 5,
     flex: 1,
     marginRight: 5,
   },
+  
   modifyButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#4CAF50',
     padding: 10,
     borderRadius: 5,
     flex: 1,

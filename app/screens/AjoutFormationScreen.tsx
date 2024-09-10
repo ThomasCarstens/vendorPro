@@ -40,8 +40,8 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       setFormData({
         ...existingFormation,
         date: new Date(existingFormation.date),
-        heureDebut: new Date(existingFormation.heureDebut),
-        heureFin: new Date(existingFormation.heureFin),
+        heureDebut: new Date(`2000-01-01T${existingFormation.heureDebut}`),
+        heureFin: new Date(`2000-01-01T${existingFormation.heureFin}`),
       });
     }
   }, [route.params?.formation]);
@@ -68,6 +68,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
   };
 
   const handleTimeChange = (event, selectedTime, type) => {
+    console.log(formData.heureDebut)
     if (type === 'start') {
       setShowStartTimePicker(false);
     } else {
@@ -137,6 +138,9 @@ const AjoutFormationScreen = ({ navigation, route }) => {
   const uploadToFirebase = () => {
     const formattedData = {
       ...formData,
+      date: formData.date.toISOString().split('T')[0],
+      heureDebut: formData.heureDebut.toTimeString().split(' ')[0].slice(0, 5),
+      heureFin: formData.heureFin.toTimeString().split(' ')[0].slice(0, 5),
       domaine: formData.domaine === 'Autres' ? formData.autresDomaine : formData.domaine,
     };
 
@@ -221,7 +225,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       )}
 
       {renderInput('Lieu', 'lieu', 'Lieu de la formation')}
-      {renderInput('Nature de la formation', 'nature', 'Nature de la formation')}
+      {/* {renderInput('Nature de la formation', 'nature', 'Nature de la formation')} */}
       <Text style={styles.label}>Type de formation *</Text>
       <Picker
         selectedValue={formData.nature}
