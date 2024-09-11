@@ -1,20 +1,24 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
 
 const organizations = [
-  { id: '1', name: 'SOFMMOOM', description: 'Société Française de Médecine Manuelle Orthopédique et Ostéopathique Médicale' },
-  { id: '2', name: 'SMMOF', description: 'Société de Médecine Manuelle - Orthopédique de France' },
-  { id: '3', name: 'ISTM', description: 'Institut Supérieur de Thérapie Manuelle' },
-  { id: '4', name: 'GEMMMLR', description: 'Groupe \'Études et de Médecine Manuelle Médecine Légale et Réparation' },
+  { id: '1', name: 'SOFMMOOM', image: require('../../assets/images/partenaires/sofMOMMO.png'), description: 'Société Française de Médecine Manuelle Orthopédique et Ostéopathique Médicale' },
+  { id: '2', name: 'SMMOF', image: require('../../assets/images/partenaires/SMMOF.png'), description: 'Société de Médecine Manuelle - Orthopédique de France' },
+  { id: '3', name: 'ISTM', image: require('../../assets/images/partenaires/ISTM.png'), description: 'Institut Supérieur de Thérapie Manuelle' },
+  { id: '4', name: 'GEMMLR', image: require('../../assets/images/partenaires/GEMMLR.png'), description: 'Groupe \'Études et de Médecine Manuelle Médecine Légale et Réparation' },
   { id: '5', name: 'AMOPY', description: 'Association de Médecine Ostéopathique et de Posturologie Yvelines' },
   { id: '6', name: 'CEMMOM', description: 'Collège Européen de Médecine Manuelle et Ostéopathie Médicale' },
 ];
 
-const OrganizationItem = ({ name, description }) => (
+const OrganizationItem = ({ name, description, image }) => (
   <View style={styles.orgItem}>
-    <View style={styles.orgLogo}>
-      <Text style={styles.orgLogoText}>{name[0]}</Text>
-    </View>
+    {image ? (
+      <Image source={ image } style={styles.orgLogo} />
+    ) : (
+      <View style={styles.orgLogo}>
+        <Text style={styles.orgLogoText}>{name[0]}</Text>
+      </View>
+    )}
     <View style={styles.orgInfo}>
       <Text style={styles.orgName}>{name}</Text>
       <Text style={styles.orgDescription} numberOfLines={2}>{description}</Text>
@@ -28,12 +32,16 @@ const OrganizationItem = ({ name, description }) => (
 const OrganizationsPartenairesScreen = () => {
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Organisations Partenaires</Text> */}
-      <Text style={styles.title}> Petit texte explicatif... </Text>
-
+      <Text style={styles.title}> Liens directs vers les organisations partenaires. </Text>
       <FlatList
         data={organizations}
-        renderItem={({ item }) => <OrganizationItem name={item.name} description={item.description} />}
+        renderItem={({ item }) => (
+          <OrganizationItem 
+            name={item.name} 
+            description={item.description} 
+            image={item.image}
+          />
+        )}
         keyExtractor={item => item.id}
       />
     </View>
