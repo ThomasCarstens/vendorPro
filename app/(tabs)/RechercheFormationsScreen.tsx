@@ -149,7 +149,7 @@ const RechercheFormationsScreen = (props, { route }) => {
       filtered = filtered.filter(f => (f.status === 'inscrit'));
     } else if (tab === 'Je propose') {
       filtered = filtered.filter(f => (f.status === 'propose'));
-    } else if (tab === 'Corbeille') {
+    } else if (tab === 'Cachées') {
       filtered = filtered.filter(f => f.active === false);
     } else {
       // 'Visibles' tab
@@ -199,11 +199,11 @@ const RechercheFormationsScreen = (props, { route }) => {
           <Text style={styles.formationTitle}>{item.title}</Text>
           <Text>Date: {item.date}</Text>
           <Text>Lieu: {item.lieu}</Text>
-          <Text>Horaires: {item.heureDebut} - {item.heureFin}</Text>
-          <Text>Nature: {item.nature}</Text>
-          {/* <Text>Année conseillée: {item.anneeConseillee}</Text>
+          {/* <Text>Horaires: {item.heureDebut} - {item.heureFin}</Text> */}
+          {/* <Text>Nature: {item.nature}</Text> */}
+          {/* <Text>Année conseillée: {item.anneeConseillee}</Text> */}
           <Text>Tarif étudiant DIU: {item.tarifEtudiant} €</Text>
-          <Text>Tarif médecin: {item.tarifMedecin} €</Text> */}
+          <Text>Tarif médecin: {item.tarifMedecin} €</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -228,7 +228,7 @@ const RechercheFormationsScreen = (props, { route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
-        {(isFormateur?['Visibles', "J'y suis inscrit", 'Je propose', 'Corbeille']
+        {(isFormateur?['Visibles', "J'y suis inscrit", 'Je propose', 'Cachées']
         :(isLoggedIn?['Visibles', "J'y suis inscrit"]:['Visibles'])).map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -283,7 +283,7 @@ const RechercheFormationsScreen = (props, { route }) => {
 const styles = StyleSheet.create({
   formationItem: {
     marginBottom: 20,
-    padding: 15,
+    padding: 20,
     backgroundColor: '#d5dcf0',
     borderRadius: 10,
     shadowColor: "orange",

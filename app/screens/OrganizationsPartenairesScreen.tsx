@@ -32,7 +32,7 @@ const OrganizationItem = ({ name, description, image }) => (
 const OrganizationsPartenairesScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}> Liens directs vers les organisations partenaires. </Text>
+      <Text style={styles.title}> Liens directs vers les organisations partenaires.`` </Text>
       <FlatList
         data={organizations}
         renderItem={({ item }) => (

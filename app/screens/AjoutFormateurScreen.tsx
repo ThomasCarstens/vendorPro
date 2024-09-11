@@ -32,11 +32,11 @@ const AjoutFormateurScreen = () => {
       headerStyle: { backgroundColor: '#1a53ff' },
       headerTintColor: '#fff',
       headerTitleStyle: { fontWeight: 'bold' },
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.headerButton}>{'< Retour'}</Text>
-        </TouchableOpacity>
-      ),
+      // headerLeft: () => (
+      //   <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+      //     <Text style={styles.headerButton}>{'< Retour'}</Text>
+      //   </TouchableOpacity>
+      // ),
     });
   }, [navigation]);
 

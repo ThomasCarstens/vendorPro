@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Switch } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Switch, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import { ref as ref_d, set } from 'firebase/database';
+import { database } from '../../firebase';
 
-const InscriptionFormationScreen = () => {
+const InscriptionFormationScreen = ({ route }) => {
   const [medecinDiplome, setMedecinDiplome] = useState(false);
   const [anneeDiplome, setAnneeDiplome] = useState('');
   const [faculte, setFaculte] = useState('');
@@ -12,12 +14,15 @@ const InscriptionFormationScreen = () => {
   const [telephone, setTelephone] = useState('');
   const [etudiantDIU, setEtudiantDIU] = useState(false);
   const [anneeDIU, setAnneeDIU] = useState('');
+  const [formationId, setFormationId] = useState(route.params.formationId);
 
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
-    // Here you would typically send the form data to your backend
-    console.log({
+
+ // Modified handleSubmit function
+ const handleSubmit = async () => {
+  // Prepare the form data
+    const formData = {
       medecinDiplome,
       anneeDiplome,
       faculte,
@@ -26,10 +31,28 @@ const InscriptionFormationScreen = () => {
       telephone,
       etudiantDIU,
       anneeDIU,
-    });
+      timestamp: new Date().toISOString(),
+    };
 
-    // Navigate back to the previous screen or to a confirmation screen
-    navigation.goBack();
+    // TODO: Replace this with the actual user's UID from authentication
+    const userUID = 'ADMIN_TEST_USER_123';
+
+    try {
+      // Create a reference to the user's data in the database
+      const userRef = ref_d(database, `demandes/${userUID}/${formationId}`);
+
+      // Set the data in Firebase
+      await set(userRef, formData);
+
+      // Show success message
+      Alert.alert('Succès', 'Votre inscription a été enregistrée avec succès!');
+
+      // Navigate back to the previous screen or to a confirmation screen
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      Alert.alert('Erreur', 'Une erreur est survenue lors de l\'enregistrement. Veuillez réessayer.');
+    }
   };
 
   return (

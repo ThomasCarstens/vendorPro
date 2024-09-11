@@ -1,167 +1,128 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { ref, onValue } from 'firebase/database';
+import { database } from '../../firebase';
+import { Ionicons } from '@expo/vector-icons';
 
-// const Tab = createMaterialTopTabNavigator();
-
-
-const mockProfiles = [
-  {
-    id: '1',
-    status: 'En attente',
-    name: 'Dr. Sophie Martin',
-    medecinDiplome: true,
-    anneeDiplome: 2012,
-    faculte: 'Université de Bordeaux',
-    fonctionEnseignant: true,
-    etudiantDIU: 'N/A',
-    diplome: 'Médecin Kinésithérapeute',
-    anneeDiplomeFormateur: 2018,
-    faculteEnseignement: 'Institut de Formation en Masso-Kinésithérapie de Bordeaux',
-    groupeEnseignementPrive: 'Réseau Kiné Plus',
-    pratiqueStructurelle: true,
-    pratiqueFonctionnelle: 'Rééducation posturale',
-    adresse: '22 Cours de la Marne, 33000 Bordeaux',
-    courriel: 's.martin@kinefrance.fr',
-    telephone: '05 56 78 90 12',
-    dateCompletion: '2023-05-15',
-  },
-  {
-    id: '2',
-    status: 'Validé',
-    name: 'Dr. Marie Dupont',
-    medecinDiplome: true,
-    anneeDiplome: 2005,
-    faculte: 'Université Paris Descartes',
-    fonctionEnseignant: true,
-    etudiantDIU: 'N/A',
-    diplome: 'Médecin Ostéopathe',
-    anneeDiplomeFormateur: 2010,
-    faculteEnseignement: 'École Supérieure d\'Ostéopathie',
-    groupeEnseignementPrive: 'N/A',
-    pratiqueStructurelle: true,
-    pratiqueFonctionnelle: 'Thérapie cranio-sacrale',
-    adresse: '15 Rue de la Santé, 75013 Paris',
-    courriel: 'm.dupont@osteofrance.fr',
-    telephone: '01 23 45 67 89',
-    dateCompletion: '2023-04-20',
-  },
-  {
-    id: '3',
-    status: 'Rejeté',
-    name: 'Jean Lefevre',
-    medecinDiplome: false,
-    anneeDiplome: 2008,
-    faculte: 'N/A',
-    fonctionEnseignant: false,
-    etudiantDIU: 2,
-    diplome: 'En cours (Ostéopathe)',
-    anneeDiplomeFormateur: 'N/A',
-    faculteEnseignement: 'N/A',
-    groupeEnseignementPrive: 'N/A',
-    pratiqueStructurelle: false,
-    pratiqueFonctionnelle: 'Non',
-    adresse: '7 Avenue des Étudiants, 69003 Lyon',
-    courriel: 'j.lefevre@etudiant.fr',
-    telephone: '06 12 34 56 78',
-    dateCompletion: '2023-05-01',
-  },
-  {
-    id: '4',
-    status: 'En attente',
-    name: 'Dr. Isabelle Rousseau',
-    medecinDiplome: true,
-    anneeDiplome: 2008,
-    faculte: 'Université Claude Bernard Lyon 1',
-    fonctionEnseignant: true,
-    etudiantDIU: 'N/A',
-    diplome: 'Médecin Rhumatologue',
-    anneeDiplomeFormateur: 2015,
-    faculteEnseignement: 'Faculté de Médecine de Lyon',
-    groupeEnseignementPrive: 'Groupe Hospitalier Est',
-    pratiqueStructurelle: true,
-    pratiqueFonctionnelle: 'Échographie musculo-squelettique',
-    adresse: '8 Avenue Rockefeller, 69008 Lyon',
-    courriel: 'i.rousseau@chu-lyon.fr',
-    telephone: '04 72 35 58 69',
-    dateCompletion: '2023-05-18',
-  },
-  {
-    id: '5',
-    status: 'Validé',
-    name: 'Pierre Dubois',
-    medecinDiplome: false,
-    anneeDiplome: 'N/A',
-    faculte: 'N/A',
-    fonctionEnseignant: true,
-    etudiantDIU: 'N/A',
-    diplome: 'Kinésithérapeute',
-    anneeDiplomeFormateur: 2013,
-    faculteEnseignement: 'IFMK Saint-Michel, Paris',
-    groupeEnseignementPrive: 'Réseau Kiné France',
-    pratiqueStructurelle: true,
-    pratiqueFonctionnelle: 'Méthode Mézières',
-    adresse: '45 Rue du Bac, 75007 Paris',
-    courriel: 'p.dubois@kinefrance.fr',
-    telephone: '01 45 67 89 01',
-    dateCompletion: '2023-03-10',
-  }
-];
-
-
-const ProfileItem = ({ profile, onPress }) => (
-  <TouchableOpacity style={styles.profileItem} onPress={onPress}>
-    <Text style={styles.name}>{profile.name}</Text>
-    <Text>Médecin Diplômé: {profile.medecinDiplome ? 'Oui' : 'Non'}</Text>
-    <Text>Fonction Enseignant: {profile.fonctionEnseignant ? 'Oui' : 'Non'}</Text>
-    <Text>Date de complétion: {profile.dateCompletion}</Text>
-  </TouchableOpacity>
-);
-
-const ProfileList = ({ status, navigation }) => {
-  const filteredProfiles = mockProfiles.filter(profile => profile.status === status);
-  
-  return (
-    <FlatList
-      data={filteredProfiles}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <ProfileItem 
-          profile={item} 
-          onPress={() => navigation.navigate('ValidationProfil', { profile: item })}
-        />
-      )}
-      ListEmptyComponent={<Text style={styles.emptyList}>Aucun profil trouvé</Text>}
-    />
-  );
-};
-
-const FormateursProfileList = ({ navigation }) => {
+const DemandesProfilsScreen = ({ navigation }) => {
+  const [profiles, setProfiles] = useState([]);
+  const [formations, setFormations] = useState([]);
   const [activeTab, setActiveTab] = useState('En attente');
-  const tabs = ['En attente', 'Validé', 'Rejeté'];
+
+  useEffect(() => {
+    const demandesRef = ref(database, 'demandes');
+    const formationsRef = ref(database, 'formations');
+
+    const unsubscribeDemandes = onValue(demandesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formattedProfiles = [];
+        Object.keys(data).forEach(userId => {
+          Object.keys(data[userId]).forEach(demandeId => {
+            formattedProfiles.push({
+              id: `${userId}_${demandeId}`,
+              ...data[userId][demandeId],
+              type: 'demande'
+            });
+          });
+        });
+        setProfiles(formattedProfiles);
+      }
+    });
+
+    const unsubscribeFormations = onValue(formationsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formattedFormations = Object.keys(data).map(id => ({
+          id,
+          ...data[id],
+          type: 'formation'
+        }));
+        setFormations(formattedFormations);
+      }
+    });
+
+    return () => {
+      unsubscribeDemandes();
+      unsubscribeFormations();
+    };
+  }, []);
+
+  const getStatus = (item) => {
+    if (item.type === 'formation') {
+      return item.status === 'propose' ? 'En attente' : (item.active ? 'Validée' : 'Rejetée');
+    }
+    return 'En attente'; // Default status for demandes
+  };
+
+  const allItems = [...profiles, ...formations].sort((a, b) => 
+    new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)
+  );
+
+  const filteredItems = allItems.filter(item => getStatus(item) === activeTab);
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.itemCard}
+      onPress={() => navigation.navigate('ValidationProfil', { profile: item })}
+    >
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>
+          {item.type === 'demande' ? "Demande d'inscription Formation" : "Demande de validation Formation"}
+        </Text>
+        <Text style={styles.cardDate}>
+          {new Date(item.timestamp || item.date).toLocaleDateString()}
+        </Text>
+      </View>
+      <Text style={styles.cardEmail}>{item.email || item.title}</Text>
+      {item.type === 'demande' ? (
+        <>
+          <Text>Médecin Diplômé: {item.medecinDiplome ? 'Oui' : 'Non'}</Text>
+          <Text>Fonction Enseignant: {item.fonctionEnseignant ? 'Oui' : 'Non'}</Text>
+        </>
+      ) : (
+        <>
+          <Text>Lieu: {item.lieu}</Text>
+          <Text>Date: {item.date}</Text>
+        </>
+      )}
+      <View style={styles.cardIcon}>
+        <Ionicons 
+          name={item.type === 'demande' ? "person-outline" : "school-outline"} 
+          size={24} 
+          color="#007AFF" 
+        />
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
-        {tabs.map((tab) => (
+        {['En attente', 'Validée', 'Rejetée'].map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}
             onPress={() => setActiveTab(tab)}
           >
-            <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>{tab}</Text>
+            <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
+              {tab}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
-      <ProfileList status={activeTab} navigation={navigation} />
-      {/* {isFormateur && ( */}
-            <TouchableOpacity 
-              style={styles.newFormationButton}
-              onPress={() => navigation.navigate('AjoutFormateur')}
-            >
-              <Text style={styles.newFormationButtonText}>+</Text>
-            </TouchableOpacity>
-
+      <FlatList
+        data={filteredItems}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ListEmptyComponent={<Text style={styles.emptyList}>Aucun élément trouvé</Text>}
+      />
+      <TouchableOpacity 
+        style={styles.newFormationButton}
+        onPress={() => navigation.navigate('AjoutFormateur')}
+      >
+        <Text style={styles.newFormationButtonText}>+ Formateur</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -194,7 +155,7 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: 'bold',
   },
-  profileItem: {
+  itemCard: {
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 16,
@@ -202,11 +163,30 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     elevation: 2,
   },
-  name: {
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+  },
+  cardDate: {
+    fontSize: 14,
+    color: '#7f8c8d',
+  },
+  cardEmail: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#2c3e50',
+  },
+  cardIcon: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
   },
   emptyList: {
     textAlign: 'center',
@@ -219,7 +199,7 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 20,
     backgroundColor: '#1a53ff',
-    width: 60,
+    width: 200,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
@@ -232,4 +212,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FormateursProfileList;
+export default DemandesProfilsScreen;

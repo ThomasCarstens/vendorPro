@@ -81,7 +81,7 @@ function AdminTabs() {
           iconName = focused ? 'search' : 'search';
         } else if (route.name === 'Notifications') {
           iconName = focused ? 'notifications-outline' : 'notifications-outline';
-        } else if (route.name === 'DemandesProfils') {
+        } else if (route.name === 'Demandes de validation') {
           iconName = focused ? 'people' : 'people';
         }
         // You can return any component that you like here!
@@ -92,7 +92,7 @@ function AdminTabs() {
     })}>
       <Tab.Screen name="RechercheFormations" component={RechercheFormationsScreen} initialParams={{spoofLoggedIn: false, spoofFormateur: true, spoofAdmin: true, spoofValidated: true}} />
       <Tab.Screen name="Notifications" component={NotifsScreen} />
-      <Tab.Screen name="DemandesProfils" component={DemandesProfilsScreen} />
+      <Tab.Screen name="Demandes de validation" component={DemandesProfilsScreen} />
     </Tab.Navigator>
   );
 }
