@@ -169,7 +169,12 @@ const RechercheFormationsScreen = (props, { route }) => {
               styles.filterButton,
               selectedValue === option && styles.filterButtonSelected
             ]}
-            onPress={() => setSelectedValue(selectedValue === option ? '' : option)}
+            onPress={() => {
+              
+              setSelectedValue(selectedValue === option ? '' : option);
+              // applyFilters(activeTab); 
+              // toggleFilters();
+              }}
           >
             <Text style={[
               styles.filterButtonText,
@@ -188,15 +193,19 @@ const RechercheFormationsScreen = (props, { route }) => {
       style={styles.formationItem} 
       onPress={() => navigation.navigate('Formation', { formationId: item.id, role: {isAdmin: isAdmin, isFormateur: isFormateur} })}
     >
-      <Image source={{ uri: item.image }} style={styles.formationImage} />
-      <Text style={styles.formationTitle}>{item.title}</Text>
-      <Text>Date: {item.date}</Text>
-      <Text>Lieu: {item.lieu}</Text>
-      <Text>Horaires: {item.heureDebut} - {item.heureFin}</Text>
-      <Text>Nature: {item.nature}</Text>
-      <Text>Année conseillée: {item.anneeConseillee}</Text>
-      <Text>Tarif étudiant DIU: {item.tarifEtudiant} €</Text>
-      <Text>Tarif médecin: {item.tarifMedecin} €</Text>
+      <View style={styles.formationContent}>
+        <Image source={{ uri: item.image }} style={styles.formationImage} />
+        <View style={styles.formationDetails}>
+          <Text style={styles.formationTitle}>{item.title}</Text>
+          <Text>Date: {item.date}</Text>
+          <Text>Lieu: {item.lieu}</Text>
+          <Text>Horaires: {item.heureDebut} - {item.heureFin}</Text>
+          <Text>Nature: {item.nature}</Text>
+          {/* <Text>Année conseillée: {item.anneeConseillee}</Text>
+          <Text>Tarif étudiant DIU: {item.tarifEtudiant} €</Text>
+          <Text>Tarif médecin: {item.tarifMedecin} €</Text> */}
+        </View>
+      </View>
     </TouchableOpacity>
   );
 
@@ -240,14 +249,15 @@ const RechercheFormationsScreen = (props, { route }) => {
       </TouchableOpacity>
 
       <Animated.View style={[styles.filtersContainer, { height: filterHeight }]}>
+      <TouchableOpacity style={styles.applyFilterButton} onPress={() => { applyFilters(); toggleFilters(); }}>
+            <Text style={styles.applyFilterButtonText}>Lancer ma recherche</Text>
+          </TouchableOpacity>
         <ScrollView>
           {renderFilterButtons('Domaine', categoryOptions, categoryFilter, setCategoryFilter)}
           {renderFilterButtons('Lieu', lieuOptions, lieuFilter, setLieuFilter)}
           {/* {renderFilterButtons('Niveau', niveauOptions, niveauFilter, setNiveauFilter)} */}
           
-          <TouchableOpacity style={styles.applyFilterButton} onPress={() => { applyFilters(); toggleFilters(); }}>
-            <Text style={styles.applyFilterButtonText}>Appliquer les filtres</Text>
-          </TouchableOpacity>
+
         </ScrollView>
       </Animated.View>
 
@@ -271,6 +281,69 @@ const RechercheFormationsScreen = (props, { route }) => {
 };
 
 const styles = StyleSheet.create({
+  formationItem: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#d5dcf0',
+    borderRadius: 10,
+    shadowColor: "orange",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  formationContent: {
+    flexDirection: 'row',
+  },
+  formationImage: {
+    width: 120,
+    height: 180,
+    borderRadius: 30,
+    marginRight: 15,
+  },
+  formationDetails: {
+    flex: 1,
+  },
+  formationTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  filtersContainer: {
+    overflow: 'hidden',
+    marginBottom: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+  },
+  filterButton: {
+    backgroundColor: 'white',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    margin: 4,
+    borderWidth: 1,
+    borderColor: '#1a53ff',
+  },  
+  filterButtonText: {
+    color: '#1a53ff',
+  },
+  applyFilterButton: {
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 20,
+    // width:200,
+    alignItems: 'center',
+    // marginTop: 5,
+    marginHorizontal: 10,
+
+  },
+  applyFilterButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
   container: {
     flex: 1,
     padding: 10,
@@ -294,37 +367,37 @@ const styles = StyleSheet.create({
   activeTabText: {
     color: 'white',
   },
-  filterButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#1a53ff',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  filterButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  filtersContainer: {
-    overflow: 'hidden',
-    marginBottom: 10,
-  },
+  // filterButton: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   backgroundColor: '#1a53ff',
+  //   padding: 10,
+  //   borderRadius: 5,
+  //   marginBottom: 10,
+  // },
+  // filterButtonText: {
+  //   color: 'white',
+  //   fontSize: 16,
+  // },
+  // filtersContainer: {
+  //   overflow: 'hidden',
+  //   marginBottom: 10,
+  // },
   picker: {
     height: 40,
     marginBottom: 5,
   },
-  applyFilterButton: {
-    backgroundColor: '#1a53ff',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  applyFilterButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
+  // applyFilterButton: {
+  //   backgroundColor: '#1a53ff',
+  //   padding: 10,
+  //   borderRadius: 5,
+  //   alignItems: 'center',
+  // },
+  // applyFilterButtonText: {
+  //   color: 'white',
+  //   fontSize: 16,
+  // },
   list: {
     flex: 1,
   },
@@ -344,23 +417,17 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
-  formationTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  // formationItem: {
-  //   marginBottom: 20,
-  //   padding: 10,
-  //   backgroundColor: '#f0f0f0',
+  // formationTitle: {
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  //   marginBottom: 5,
+  // },
+  // formationImage: {
+  //   width: '100%',
+  //   height: 150,
+  //   marginBottom: 10,
   //   borderRadius: 5,
   // },
-  formationImage: {
-    width: '100%',
-    height: 150,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
   headerButton: {
     color: 'white',
     fontSize: 16,
@@ -380,12 +447,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-  filtersContainer: {
-    overflow: 'hidden',
-    marginBottom: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-  },
+  
   filterSection: {
     marginBottom: 15,
     paddingHorizontal: 10,
@@ -399,50 +461,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  filterButton: {
-    backgroundColor: 'white',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    margin: 4,
-    borderWidth: 1,
-    borderColor: '#1a53ff',
-  },
+
   filterButtonSelected: {
     backgroundColor: '#1a53ff',
   },
-  filterButtonText: {
-    color: '#1a53ff',
-  },
+
   filterButtonTextSelected: {
     color: 'white',
   },
-  applyFilterButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
-    marginHorizontal: 10,
-  },
-  applyFilterButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  formationItem: {
-    marginBottom: 20,
-    padding: 15,
-    backgroundColor: '#d5dcf0',
-    borderRadius: 10,
-    shadowColor: "orange",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
+
+  // formationItem: {
+  //   marginBottom: 20,
+  //   padding: 15,
+  //   backgroundColor: '#d5dcf0',
+  //   borderRadius: 10,
+  //   shadowColor: "orange",
+  //   shadowOffset: {
+  //     width: 0,
+  //     height: 2,
+  //   },
+  //   shadowOpacity: 0.23,
+  //   shadowRadius: 2.62,
+  //   elevation: 4,
+  // },
+
 });
 
 export default RechercheFormationsScreen;

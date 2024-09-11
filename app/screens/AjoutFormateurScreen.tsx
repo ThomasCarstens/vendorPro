@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Switch, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Switch, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import { ref as ref_d, set } from 'firebase/database';
+import { database } from '../../firebase';
+import { sendEmailVerification } from 'firebase/auth';
 
-const TABS = ['Etudiant', 'Formateur']; //['Etudiant', 'Formateur', 'Rejete par l\'admin'];
+const TABS = ['Etudiant', 'Formateur'];
 
 const AjoutFormateurScreen = () => {
-  const [activeTab, setActiveTab] = useState('Etudiant');
-  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState('Formateur');
+  const [isEditing, setIsEditing] = useState(true);
   const [profile, setProfile] = useState({
     medecinDiplome: false,
     anneeDiplome: '',
@@ -17,6 +20,7 @@ const AjoutFormateurScreen = () => {
     telephone: '',
     etudiantDIU: false,
     anneeDIU: '',
+    inviteCode: '',
   });
 
   const navigation = useNavigation();
@@ -37,9 +41,54 @@ const AjoutFormateurScreen = () => {
   }, [navigation]);
 
   const handleProfileChange = (key, value) => {
-    if (isEditing) {
-      setProfile(prevProfile => ({ ...prevProfile, [key]: value }));
+    setProfile(prevProfile => ({ ...prevProfile, [key]: value }));
+  };
+
+  const generateInviteCode = () => {
+    return Math.random().toString(36).substring(2, 10).toUpperCase();
+  };
+
+  const sendWelcomeEmail = (email, inviteCode) => {
+    // This is a placeholder for the email sending functionality
+    // You would typically use a backend service or a third-party API to send emails
+    console.log(`Sending welcome email to ${email} with invite code ${inviteCode}`);
+    // Simulating email content
+    const emailContent = `
+      Bienvenue sur notre plateforme!
+
+      Nous sommes ravis de vous accueillir en tant que nouveau formateur. 
+      Votre code d'invitation est: ${inviteCode}
+
+      Pour valider votre compte, veuillez utiliser ce code lors de votre première connexion.
+
+      Si vous avez des questions, n'hésitez pas à nous contacter.
+
+      Cordialement,
+      L'équipe de la plateforme
+    `;
+    console.log(emailContent);
+    // In a real application, you would send this email using your preferred method
+  };
+
+  const handleSave = () => {
+    if (!profile.email) {
+      Alert.alert("Erreur", "L'email est obligatoire.");
+      return;
     }
+
+    const inviteCode = generateInviteCode();
+    const formateurData = { ...profile, inviteCode };
+
+    set(ref_d(database, `formateurs/${inviteCode}`), formateurData)
+      .then(() => {
+        Alert.alert("Succès", "Le profil du formateur a été ajouté avec succès.");
+        sendWelcomeEmail(profile.email, inviteCode);
+        navigation.goBack();
+      })
+      .catch((error) => {
+        Alert.alert("Erreur", "Une erreur s'est produite lors de l'enregistrement.");
+        console.error(error);
+      });
   };
 
   const renderTabs = () => (
@@ -56,18 +105,6 @@ const AjoutFormateurScreen = () => {
     </View>
   );
 
-  const renderRejectedContent = () => (
-    <View style={styles.rejectedContainer}>
-      <Text style={styles.rejectedText}>
-        Votre demande a été rejetée pour la raison suivante : 
-        {"\n\n"}
-        [Insérer la raison du rejet ici]
-        {"\n\n"}
-        Pour toute correspondance ultérieure, veuillez contacter admindumay@gmail.com
-      </Text>
-    </View>
-  );
-
   const renderStudentMessage = () => (
     <View style={styles.studentMessageContainer}>
       <Text style={styles.studentMessageText}>
@@ -80,7 +117,7 @@ const AjoutFormateurScreen = () => {
 
   const renderFormField = (label, key, type = 'text') => {
     const props = {
-      style: [styles.input, !isEditing && styles.disabledInput],
+      style: styles.input,
       value: profile[key],
       onChangeText: (text) => handleProfileChange(key, text),
       editable: isEditing,
@@ -106,7 +143,7 @@ const AjoutFormateurScreen = () => {
           <Picker
             selectedValue={profile[key]}
             onValueChange={(itemValue) => handleProfileChange(key, itemValue)}
-            style={[styles.picker, !isEditing && styles.disabledPicker]}
+            style={styles.picker}
             enabled={isEditing}
           >
             <Picker.Item label="Sélectionnez une année" value="" />
@@ -136,26 +173,22 @@ const AjoutFormateurScreen = () => {
         </>
       )}
       {renderFormField('Fonction Enseignant', 'fonctionEnseignant')}
-      {renderFormField('Email (une invitation sera envoyée)', 'email')}
+      {renderFormField('Email', 'email')}
       {renderFormField('Numéro de téléphone', 'telephone')}
       {renderFormField('Étudiant DIU', 'etudiantDIU', 'switch')}
       {profile.etudiantDIU && renderFormField('Année DIU', 'anneeDIU', 'picker')}
 
       <TouchableOpacity
-        style={styles.modifyButton}
-        onPress={() => setIsEditing(!isEditing)}
+        style={styles.saveButton}
+        onPress={handleSave}
       >
-        <Text style={styles.modifyButtonText}>
-          {isEditing ? 'Sauvegarder' : 'Modifier'}
-        </Text>
+        <Text style={styles.saveButtonText}>Enregistrer</Text>
       </TouchableOpacity>
 
       <Text style={styles.confidentialText}>
         Ces informations restent confidentielles.
       </Text>
     </ScrollView>
-
-
   );
 
   return (
@@ -163,11 +196,9 @@ const AjoutFormateurScreen = () => {
       {renderTabs()}
       {activeTab === 'Etudiant' && renderStudentMessage()}
       {activeTab === 'Formateur' && renderProfileForm()}
-      {activeTab === 'Rejete par l\'admin' && renderRejectedContent()}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
 
   headerButton: {
@@ -271,6 +302,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333',
     lineHeight: 24,
+  },
+  saveButton: {
+    backgroundColor: '#007bff',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

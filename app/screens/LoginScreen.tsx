@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { storage, database } from '../../firebase'
+import { getDownloadURL, list, ref } from 'firebase/storage'
+
 
 const LoginScreen = ({ navigation }) => {
   const renderButton = (title, phase, phaseName, onPress) => (
@@ -11,15 +14,14 @@ const LoginScreen = ({ navigation }) => {
       <Text style={styles.buttonPhase}>{` ${phase} `}</Text>
     </TouchableOpacity>
   );
-
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/images/icon.png')} style={styles.logo} />
+      <Image source={require('../../assets/images/logoEsculappl.png')} style={styles.logo} />
       <View style={styles.titleContainer}>
         <Text style={styles.appTitle}>Esculappl</Text>
         <Text style={styles.appSlogan}>Appli de Formations de Médecine Manuelle</Text>
       </View>
-      <Text style={styles.versionText}>Version « preparation de Phase 1 »</Text>
+      <Text style={styles.versionText}>Version « premieres images »</Text>
       <View style={styles.buttonContainer}>
         <View style={styles.buttonRow}>
         {renderButton(
@@ -80,8 +82,10 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 150,
-    height: 150,
+    height: 250,
     marginBottom: 20,
+    marginTop:20,
+    borderRadius:30,
   },
   titleContainer: {
     alignItems: 'center',
@@ -104,8 +108,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     alignItems: 'flex-start'
-    
-    
   },
   buttonRow: {
     flexDirection: 'row',
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   button: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',//#EAE0AE
     padding: 10,
     marginBottom: 10,
     marginLeft: 10,
