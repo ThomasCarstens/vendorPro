@@ -27,6 +27,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
     competencesAcquises: '',
     prerequis: '',
     instructions: '',
+    admin: '', //isAdmin should avoid this.
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -142,6 +143,7 @@ const AjoutFormationScreen = ({ navigation, route }) => {
       heureDebut: formData.heureDebut.toTimeString().split(' ')[0].slice(0, 5),
       heureFin: formData.heureFin.toTimeString().split(' ')[0].slice(0, 5),
       domaine: formData.domaine === 'Autres' ? formData.autresDomaine : formData.domaine,
+      admin: route.params?.formation ? formData.admin : "en attente"//unless isAdmin!
     };
 
     set(ref_d(database, `formations/${formData.id}`), formattedData)

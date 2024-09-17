@@ -49,10 +49,19 @@ const DemandesProfilsScreen = ({ navigation }) => {
   }, []);
 
   const getStatus = (item) => {
-    if (item.type === 'formation') {
-      return item.status === 'propose' ? 'En attente' : (item.active ? 'Validée' : 'Rejetée');
+    // if (item.type === 'formation') {
+    //   return item.status === 'propose' ? 'En attente' : (item.active ? 'Validée' : 'Rejetée');
+    // }
+    // return 'En attente'; // Default status for demandes
+    if (item.admin){
+      let status = item.admin
+      let capStatus = status[0].toUpperCase() + status.slice(1);
+      console.log(capStatus)
+      return capStatus
     }
     return 'En attente'; // Default status for demandes
+
+    
   };
 
   const allItems = [...profiles, ...formations].sort((a, b) => 
@@ -89,7 +98,7 @@ const DemandesProfilsScreen = ({ navigation }) => {
       <View style={styles.cardIcon}>
         <Ionicons 
           name={item.type === 'demande' ? "person-outline" : "school-outline"} 
-          size={24} 
+          size={40} 
           color="#007AFF" 
         />
       </View>
@@ -179,6 +188,7 @@ const styles = StyleSheet.create({
   },
   cardEmail: {
     fontSize: 18,
+    marginRight:50,
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#2c3e50',
@@ -186,7 +196,7 @@ const styles = StyleSheet.create({
   cardIcon: {
     position: 'absolute',
     right: 16,
-    top: 16,
+    top: 60,
   },
   emptyList: {
     textAlign: 'center',

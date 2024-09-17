@@ -59,12 +59,13 @@ const FormationScreen = ({ route, navigation }) => {
       <Text style={styles.title}>{formation.title}</Text>
       {(role.isAdmin===true) ? (
         <View style={styles.buttonContainer}>
+          {(formation.active)?
           <TouchableOpacity 
             style={styles.signUpButton}
             onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
           >
             <Text style={styles.signUpButtonText}>S'inscrire</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>:(<View></View>)}
           <TouchableOpacity 
             style={styles.modifyButton}
             onPress={() => navigation.navigate('AjoutFormation', { formation: formation, role: role })}
@@ -80,12 +81,12 @@ const FormationScreen = ({ route, navigation }) => {
         </View>
       ) : (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity 
+          {(formation.active)?<TouchableOpacity 
             style={styles.signUpButton}
             onPress={() => navigation.navigate('InscriptionFormation', { formationId: formation.id })}
           >
             <Text style={styles.signUpButtonText}>S'inscrire</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>:(<View></View>)}
         </View>
       )}
       <Text style={styles.info}>Date: {formation.date}</Text>

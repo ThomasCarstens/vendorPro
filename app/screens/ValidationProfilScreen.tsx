@@ -5,24 +5,31 @@ import { database } from '../../firebase';
 import { Ionicons } from '@expo/vector-icons';
 
 const ValidationProfil = ({ route, navigation }) => {
-  const { profile } = route.params;
-  const [status, setStatus] = useState(profile.status || 'En attente');
+  const { profile } = route.params; // profil et formation.
+  const [adminStatus, setAdminStatus] = useState(profile.admin || 'En attente');
 
-  const handleValidation = async (newStatus) => {
+  const handleValidation = async (validationStatus) => {
     try {
       let updates = {};
+      
+      
       if (profile.type === 'demande') {
-        updates[`/demandes/${profile.id.split('_')[0]}/${profile.id.split('_')[1]}/status`] = newStatus;
+        // console.log(profile.id)
+        let formationId = profile.id.split('_')[1]
+        let accountUid = profile.id.split('_')[0]
+        updates[`/demandes/${accountUid}/${formationId}/admin`] = validationStatus;
       } else {
-        updates[`/formations/${profile.id}/status`] = newStatus === 'Validée' ? 'active' : 'inactive';
-        updates[`/formations/${profile.id}/active`] = newStatus === 'Validée';
+        // console.log(profile.id)
+        updates[`/formations/${profile.id}/admin`] = validationStatus === 'Validée' ? 'validée' : 'rejetée';
+        updates[`/formations/${profile.id}/active`] = validationStatus === 'Validée';
       }
 
       await update(ref(database), updates);
-      setStatus(newStatus);
+      
+      setAdminStatus(validationStatus);
       Alert.alert(
         'Mise à jour réussie',
-        `La demande a été ${newStatus === 'Validée' ? 'validée' : 'rejetée'} avec succès.`,
+        `La demande a été ${validationStatus === 'Validée' ? 'validée' : 'rejetée'} avec succès.`,
         [{ text: 'OK', onPress: () => navigation.goBack() }]
       );
     } catch (error) {
@@ -50,7 +57,27 @@ const ValidationProfil = ({ route, navigation }) => {
           color="#007AFF" 
         />
       </View>
+      <View style={styles.statusContainer}>
+        <Text style={styles.statusLabel}>Statut actuel:</Text>
+        <Text style={[styles.statusValue, { color: adminStatus === 'Validée' ? 'green' : (adminStatus === 'Rejetée' ? 'red' : 'orange') }]}>
+          {adminStatus}
+        </Text>
+      </View>
 
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.validateButton]}
+          onPress={() => handleValidation('Validée')}
+        >
+          <Text style={styles.buttonText}>Valider</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.rejectButton]}
+          onPress={() => handleValidation('Rejetée')}
+        >
+          <Text style={styles.buttonText}>Rejeter</Text>
+        </TouchableOpacity>
+      </View>
       {profile.type === 'demande' ? (
         <>
           {renderField('Email', profile.email)}
@@ -83,28 +110,8 @@ const ValidationProfil = ({ route, navigation }) => {
           {renderField('Instructions', profile.instructions)}
         </>
       )}
-
-      <View style={styles.statusContainer}>
-        <Text style={styles.statusLabel}>Statut actuel:</Text>
-        <Text style={[styles.statusValue, { color: status === 'Validée' ? 'green' : (status === 'Rejetée' ? 'red' : 'orange') }]}>
-          {status}
-        </Text>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.validateButton]}
-          onPress={() => handleValidation('Validée')}
-        >
-          <Text style={styles.buttonText}>Valider</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, styles.rejectButton]}
-          onPress={() => handleValidation('Rejetée')}
-        >
-          <Text style={styles.buttonText}>Rejeter</Text>
-        </TouchableOpacity>
-      </View>
+    <View></View>
+     
     </ScrollView>
   );
 };

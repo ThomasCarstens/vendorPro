@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Switch, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
@@ -6,6 +6,8 @@ import { ref as ref_d, set } from 'firebase/database';
 import { database } from '../../firebase';
 
 const InscriptionFormationScreen = ({ route }) => {
+  const [nom, setNom] = useState('');
+  const [prenom, setPrenom] = useState('');
   const [medecinDiplome, setMedecinDiplome] = useState(false);
   const [anneeDiplome, setAnneeDiplome] = useState('');
   const [faculte, setFaculte] = useState('');
@@ -18,11 +20,11 @@ const InscriptionFormationScreen = ({ route }) => {
 
   const navigation = useNavigation();
 
-
- // Modified handleSubmit function
- const handleSubmit = async () => {
-  // Prepare the form data
+  const handleSubmit = async () => {
     const formData = {
+      admin: 'en attente', //isAdmin should avoid this.
+      nom,
+      prenom,
       medecinDiplome,
       anneeDiplome,
       faculte,
@@ -35,19 +37,12 @@ const InscriptionFormationScreen = ({ route }) => {
     };
 
     // TODO: Replace this with the actual user's UID from authentication
-    const userUID = 'ADMIN_TEST_USER_123';
+    const userUID = 'UKpwHEnNP6enoIhI4lhBpIdoEfR2';
 
     try {
-      // Create a reference to the user's data in the database
       const userRef = ref_d(database, `demandes/${userUID}/${formationId}`);
-
-      // Set the data in Firebase
       await set(userRef, formData);
-
-      // Show success message
       Alert.alert('Succès', 'Votre inscription a été enregistrée avec succès!');
-
-      // Navigate back to the previous screen or to a confirmation screen
       navigation.goBack();
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -58,6 +53,27 @@ const InscriptionFormationScreen = ({ route }) => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Inscription à la Formation</Text>
+
+      <View style={styles.nameContainer}>
+        <View style={styles.nameField}>
+          <Text style={styles.label}>Nom</Text>
+          <TextInput
+            style={styles.input}
+            value={nom}
+            onChangeText={setNom}
+            placeholder="Nom de famille"
+          />
+        </View>
+        <View style={styles.nameField}>
+          <Text style={styles.label}>Prénom</Text>
+          <TextInput
+            style={styles.input}
+            value={prenom}
+            onChangeText={setPrenom}
+            placeholder="Prénom"
+          />
+        </View>
+      </View>
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>Médecin Diplômé</Text>
@@ -165,6 +181,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  nameContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  nameField: {
+    flex: 1,
+    marginRight: 10,
+  },
   formGroup: {
     marginBottom: 20,
   },
@@ -199,5 +224,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 
 export default InscriptionFormationScreen;
