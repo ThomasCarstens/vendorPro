@@ -16,12 +16,12 @@ const LoginScreen = ({ navigation }) => {
   );
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/images/logoEsculappl.png')} style={styles.logo} />
+      <Image source={require('../../assets/vendorprologo.webp')} style={styles.logo} />
       <View style={styles.titleContainer}>
-        <Text style={styles.appTitle}>Esculappl</Text>
-        <Text style={styles.appSlogan}>Appli de Formations de Médecine Manuelle</Text>
+        <Text style={styles.appTitle}>VendorPro</Text>
+        <Text style={styles.appSlogan}>Towards autonomous vending machines</Text>
       </View>
-      <Text style={styles.versionText}>Version « premieres images »</Text>
+      {/* <Text style={styles.versionText}>Version « premieres images »</Text> */}
       <View style={styles.buttonContainer}>
         <View style={styles.buttonRow}>
         {renderButton(
