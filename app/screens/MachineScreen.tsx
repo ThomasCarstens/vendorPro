@@ -11,7 +11,7 @@ const MachineDetailScreen = ({ route }) => {
   const { machine } = route.params;
 
   const stockItems = [
-    { name: 'Cola', current: 15, total: 20 },
+    { name: 'Cola', current: 15, total: 60 },
     { name: 'Chips', current: 8, total: 15 },
     { name: 'Candy', current: 12, total: 25 },
     { name: 'Extra Stock', current: 30 },
