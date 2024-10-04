@@ -1,20 +1,36 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { Tab, TabView, Card, Button, Icon } from '@rneui/themed';
 import { Calendar } from 'react-native-calendars';
-import { BarChart } from 'react-native-chart-kit';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
-const MachineDetailScreen = ({ route }) => {
+const MachineScreen = ({ route }) => {
   const [index, setIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState('Cola');
+  const [isRestockModalVisible, setRestockModalVisible] = useState(false);
+  const [restockItem, setRestockItem] = useState(null);
   const { machine } = route.params;
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: `${machine.name}`,
+      headerStyle: {
+        backgroundColor: '#1a53ff',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      }
+    });
+  }, [navigation]);
 
   const stockItems = [
-    { name: 'Cola', current: 15, total: 60 },
-    { name: 'Chips', current: 8, total: 15 },
-    { name: 'Candy', current: 12, total: 25 },
-    { name: 'Extra Stock', current: 30 },
+    { name: 'Cola', current: 15, total: 60, extra: 20 },
+    { name: 'Chips', current: 8, total: 15, extra: 0 },
+    { name: 'Candy', current: 12, total: 25, extra: 35 },
   ];
 
   const popularityData = {
@@ -32,39 +48,55 @@ const MachineDetailScreen = ({ route }) => {
     },
   };
 
+  const upcomingRestocks = [
+    { date: 'October 15, 2024', type: 'Full Restock', message: 'Time for a complete refresh!', time: '10:30 PM', moneyRemoved: 500 },
+    // { date: 'October 30, 2024', type: 'Partial Restock (Beverages)', message: 'Quench their thirst!', time: '11:00 PM', moneyRemoved: 200 },
+    // { date: 'November 15, 2024', type: 'Full Restock', message: 'Keep it stocked for the holidays!', time: '10:45 PM', moneyRemoved: 550 },
+  ];
+
+  const pastRestocks = [
+    { date: 'September 30, 2024', type: 'Full Restock', message: 'Maintenance was a little late, please be careful next time', time: '10:15 PM', moneyRemoved: 480 },
+    { date: 'September 15, 2024', type: 'Partial Restock (Snacks)', message: 'Car refill cost R800', time: '11:30 PM', moneyRemoved: 150 },
+  ];
+
   const InventoryTab = () => (
     <ScrollView style={styles.tabContent}>
-      <Image source={machine.image} style={styles.image} />
+      <View style={styles.imageContainer}>
+        <Image source={machine.image} style={styles.image} />
+        <LinearGradient
+          colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0)']}
+          style={styles.gradient}
+        />
+        <Text style={styles.imageText}>{machine.photoTime}</Text>
+      </View>
       
-      <LinearGradient
-        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
-        style={styles.gradient}
-      />
-      
-      <Text style={styles.imageText}>{machine.name}</Text>
       {stockItems.map((item, index) => (
         <Card key={index} containerStyle={styles.card}>
           <View style={styles.stockRow}>
             <Text style={styles.stockName}>{item.name}</Text>
             <View style={styles.stockInfo}>
               <Text style={styles.stockCurrent}>{item.current}</Text>
-              {item.total && (
-                <>
-                  <Text style={styles.stockSeparator}>/</Text>
-                  <Text style={styles.stockTotal}>{item.total}</Text>
-                </>
-              )}
+              <Text style={styles.stockSeparator}>/</Text>
+              <Text style={styles.stockTotal}>{item.total}</Text>
             </View>
           </View>
-          {item.total && (
+          <View style={styles.progressContainer}>
             <View style={styles.progressBar}>
               <View style={[styles.progress, { width: `${(item.current / item.total) * 100}%` }]} />
             </View>
-          )}
+            <TouchableOpacity 
+              style={styles.restockButton}
+              onPress={() => {
+                setRestockItem(item);
+                setRestockModalVisible(true);
+              }}
+            >
+              <Icon name="refresh" type="ionicon" color="white" size={20} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.extraStock}>Extra Stock: {item.extra} in Machine, 30 at HQ</Text>
         </Card>
       ))}
-
-
     </ScrollView>
   );
 
@@ -118,20 +150,80 @@ const MachineDetailScreen = ({ route }) => {
           containerStyle={styles.restockIcon}
         />
         <Text style={styles.restockTitle}>Upcoming Restocks</Text>
-        <View style={styles.restockItem}>
-          <Icon name="calendar-today" type="material" color="#ffffff" size={24} />
-          <Text style={styles.restockText}>October 15, 2024 - Full Restock</Text>
-        </View>
-        <View style={styles.restockItem}>
-          <Icon name="local-drink" type="material" color="#ffffff" size={24} />
-          <Text style={styles.restockText}>October 30, 2024 - Partial Restock (Beverages)</Text>
-        </View>
-        <View style={styles.restockItem}>
-          <Icon name="calendar-today" type="material" color="#ffffff" size={24} />
-          <Text style={styles.restockText}>November 15, 2024 - Full Restock</Text>
-        </View>
+        {upcomingRestocks.map((restock, index) => (
+          <Card key={index} containerStyle={styles.restockItemCard}>
+            <Text style={styles.restockDate}>{restock.date} - {restock.type}</Text>
+            <Text style={styles.restockMessage}>{restock.message}</Text>
+            <View style={styles.restockDetails}>
+              <Icon name="time" type="ionicon" color="#00ADF5" size={16} />
+              <Text style={styles.restockDetailText}>{restock.time}</Text>
+            </View>
+            <View style={styles.restockDetails}>
+              <Icon name="cash" type="ionicon" color="#00ADF5" size={16} />
+              <Text style={styles.restockDetailText}>R{restock.moneyRemoved} removed</Text>
+            </View>
+          </Card>
+        ))}
+      </Card>
+
+      <Card containerStyle={styles.restockCard}>
+        <Icon
+          name="history"
+          type="material"
+          color="#ffffff"
+          size={40}
+          containerStyle={styles.restockIcon}
+        />
+        <Text style={styles.restockTitle}>Past Restocks</Text>
+        {pastRestocks.map((restock, index) => (
+          <Card key={index} containerStyle={styles.restockItemCard}>
+            <Text style={styles.restockDate}>{restock.date} - {restock.type}</Text>
+            <Text style={styles.restockMessage}>{restock.message}</Text>
+            <View style={styles.restockDetails}>
+              <Icon name="time" type="ionicon" color="#00ADF5" size={16} />
+              <Text style={styles.restockDetailText}>{restock.time}</Text>
+            </View>
+            <View style={styles.restockDetails}>
+              <Icon name="cash" type="ionicon" color="#00ADF5" size={16} />
+              <Text style={styles.restockDetailText}>R{restock.moneyRemoved} removed</Text>
+            </View>
+          </Card>
+        ))}
       </Card>
     </ScrollView>
+  );
+
+  const RestockConfirmationModal = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isRestockModalVisible}
+      onRequestClose={() => setRestockModalVisible(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Confirm Restock 🤖🦾</Text>
+          <Text style={styles.modalText}>
+            Restock for {restockItem?.name} can be scheduled earliest after closing time at 10 PM.
+          </Text>
+          <View style={styles.modalButtonContainer}>
+            <Button
+              title="Cancel"
+              onPress={() => setRestockModalVisible(false)}
+              buttonStyle={styles.modalCancelButton}
+            />
+            <Button
+              title="OK"
+              onPress={() => {
+                setRestockModalVisible(false);
+                setIndex(2); // Switch to Restock tab
+              }}
+              buttonStyle={styles.modalOkButton}
+            />
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 
   return (
@@ -169,6 +261,7 @@ const MachineDetailScreen = ({ route }) => {
           <RestockTab />
         </TabView.Item>
       </TabView>
+      <RestockConfirmationModal />
     </View>
   );
 };
@@ -182,6 +275,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  imageContainer: {
+    position: 'relative',
+    marginBottom: 10,
+  },
   image: {
     width: '100%',
     height: 200,
@@ -192,17 +289,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 0,
-    height: '50%',
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    top: 0,
+    height: '30%',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   imageText: {
     position: 'absolute',
-    bottom: 10,
+    top: 10,
     left: 10,
     color: 'white',
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   card: {
@@ -240,15 +337,40 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
   },
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
   progressBar: {
+    flex: 1,
     height: 5,
     backgroundColor: '#3A3A3A',
     borderRadius: 5,
     overflow: 'hidden',
+    marginRight: 10,
   },
   progress: {
     height: '100%',
     backgroundColor: '#00ADF5',
+  },
+  restockButton: {
+    backgroundColor: '#00ADF5',
+    padding: 5,
+    borderRadius: 15,
+  },
+  extraStock: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    marginTop: 5,
+  },
+  tabIndicator: {
+    backgroundColor: '#00ADF5',
+    height: 3,
+  },
+  tabTitle: {
+    fontSize: 12,
+    color: '#FFFFFF',
   },
   itemSelector: {
     flexDirection: 'row',
@@ -284,6 +406,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2A2A2A',
     borderRadius: 10,
     padding: 20,
+    marginBottom: 15,
   },
   restockIcon: {
     backgroundColor: '#00ADF5',
@@ -299,24 +422,76 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  restockItem: {
+  restockItemCard: {
+    backgroundColor: '#3A3A3A',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
+  },
+  restockDate: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  restockMessage: {
+    color: '#CCCCCC',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  restockDetails: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 5,
   },
-  restockText: {
+  restockDetailText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    marginLeft: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#2A2A2A',
+    borderRadius: 10,
+    padding: 20,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalText: {
     color: '#FFFFFF',
     fontSize: 16,
-    marginLeft: 10,
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  tabIndicator: {
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  modalCancelButton: {
+    backgroundColor: '#FF3B30',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  modalOkButton: {
     backgroundColor: '#00ADF5',
-    height: 3,
-  },
-  tabTitle: {
-    fontSize: 12,
-    color: '#FFFFFF',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
 });
 
-export default MachineDetailScreen;
+
+export default MachineScreen;

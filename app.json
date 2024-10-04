@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "appdolivier",
-    "slug": "appdolivier",
+    "name": "vendorpro",
+    "slug": "vendorpro",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,15 +15,15 @@
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
-      "bundleIdentifier": "com.olivierdumay.appdolivier",
-      "buildNumber": "12"
+      "bundleIdentifier": "com.proposal.vendorpro",
+      "buildNumber": "14"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.olivierdumay.appdolivier",
+      "package": "com.proposal.vendorpro",
       "versionCode": 14,
       "googleServicesFile": "./google-services.json"
     },
@@ -54,7 +54,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "51e2e72b-ed5c-4f8d-bc3e-86e58c5e5370"
+        "projectId": "de607f50-9d33-4c7e-aab3-ff20b5fdaddd"
       }
     }
   }
