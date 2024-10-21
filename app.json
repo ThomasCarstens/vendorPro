@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "vendorpro",
-    "slug": "vendorpro",
+    "name": "merge",
+    "slug": "merge",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
-      "bundleIdentifier": "com.proposal.vendorpro",
+      "bundleIdentifier": "com.merge.merge",
       "buildNumber": "14"
     },
     "android": {
@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.proposal.vendorpro",
+      "package": "com.merge.merge",
       "versionCode": 14,
       "googleServicesFile": "./google-services.json"
     },

@@ -15,7 +15,7 @@ import SignupScreen from './screens/SignupScreen';
 import PasswordResetScreen from './screens/PasswordResetScreen';
 import BackgroundInfoScreen from './screens/BackgroundInfoScreen';
 import InscriptionScreen from './(tabs)/InscriptionScreen';
-import MyMachinesScreen from './(tabs)/MyMachinesScreen';
+import MyMachinesScreen from './(tabs)/HomePageScreen';
 import NotifsScreen from './(tabs)/NotifsScreen';
 import InventoryScreen from './(tabs)/InventoryScreen';
 import AjoutMachineScreen from './screens/AjoutMachineScreen';
@@ -23,10 +23,14 @@ import DemandesMachinesScreen from './(tabs)/DemandesMachinesScreen';
 import DemandesProfilsScreen from './(tabs)/DemandesProfilsScreen';
 import UnderConstructionScreen from './screens/UnderConstructionScreen';
 import MachineScreen from './screens/MachineScreen';
+import SwipeScreen from './screens/SwipeScreen';
 // import OrganizationsPartenairesScreen from './screens/OrganizationsPartenairesScreen';
 // import InscriptionMachineScreen from './screens/InscriptionMachineScreen';
 import ValidationProfilScreen from './screens/ValidationProfilScreen';
 import AjoutFormateurScreen from './screens/AjoutFormateurScreen';
+import HomePageScreen from './(tabs)/HomePageScreen';
+import DealScreen from './(tabs)/DealScreen';
+import HistoryScreen from './(tabs)/HistoryScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -163,27 +167,28 @@ function App() {
     return (
       <Tab.Navigator screenOptions={({ route }) => ({
         tabBarStyle:  {
-          backgroundColor: '#1a53ff',
+          backgroundColor: '#4CAF50',
       },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
   
-          if (route.name === 'MyMachines') {
-            iconName = focused ? 'build' : 'build';
-          } else if (route.name === 'Notifications') {
-            iconName = focused ? 'notifications-outline' : 'notifications-outline';
-          } else if (route.name === 'Inventory') {
-            iconName = focused ? 'cube' : 'cube';
+          if (route.name === 'HomePage') {
+            iconName = focused ? 'home' : 'home';
+          } else if (route.name === 'Deal') {
+            iconName = focused ? 'cash-outline' : 'cash-outline';
+          } else if (route.name === 'History') {
+            iconName = focused ? 'cube-outline' : 'cube-outline';
           }
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'black',
-        tabBarInactiveTintColor: 'white',
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'black',
       })}>
-        <Tab.Screen name="MyMachines" component={MyMachinesScreen} initialParams={{spoofLoggedIn: false, spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
+        <Tab.Screen name="HomePage" component={HomePageScreen} initialParams={{spoofLoggedIn: false, spoofFormateur: false, spoofAdmin: false, spoofValidated: true}}/>
         {/* <Tab.Screen name="Notifications" component={NotifsScreen} initialParams={{"gameFileContext": gameFileContext}}/> */}
-        <Tab.Screen name="Inventory" component={InventoryScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        <Tab.Screen name="Deal" component={DealScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        <Tab.Screen name="History" component={HistoryScreen} initialParams={{"gameFileContext": gameFileContext}}/>
       </Tab.Navigator>
     );
   }
@@ -227,6 +232,13 @@ function App() {
   //     setGameFile(data)
   //   } 
   // })
+  /*
+  HomePage redirects you to 2 screens (2 tabs)
+Find your best deals > DealScreen
+See history -> HistoryScreen (ALL PARCELS, CLICK ONE)
+Choose one parcel -> ParcelScreen
+
+*/
 
   return (
     <NavigationContainer independent={true}>
@@ -238,12 +250,15 @@ function App() {
         {/* <Stack.Screen name="OrganizationsPartenaires" component={OrganizationsPartenairesScreen} /> */}
 
 
-        
+        <Stack.Screen name="Swipe"       component={SwipeScreen} />
         <Stack.Screen name="AjoutMachine"       component={AjoutMachineScreen} />
         <Stack.Screen name="Machine"       component={MachineScreen} />
-        <Stack.Screen name="MyMachines"  component={MyMachinesScreen} options={{ headerShown: true, headerBackTitleVisible: true }}/>
-        {/* <Stack.Screen name="InscriptionMachine" component={InscriptionMachineScreen} /> */}
 
+        {/* Merge tabs  */}
+        <Stack.Screen name="HomePage"  component={HomePageScreen} options={{ headerShown: true, headerBackTitleVisible: true }}/>
+        <Tab.Screen name="Deal" component={DealScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+        <Tab.Screen name="History" component={HistoryScreen} initialParams={{"gameFileContext": gameFileContext}}/>
+ 
         {/* tabs if ADMIN */}
         <Stack.Screen name="AdminTabs"            component={AdminTabs} options={{ headerShown: false }}  />
         <Stack.Screen name="ValidationProfil" component={ValidationProfilScreen} />

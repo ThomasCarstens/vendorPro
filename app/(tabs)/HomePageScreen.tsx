@@ -35,7 +35,7 @@ const machines = [
 
 
 
-const MyMachinesScreen = () => {
+const HomePageScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -161,4 +161,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyMachinesScreen;
+export default HomePageScreen;

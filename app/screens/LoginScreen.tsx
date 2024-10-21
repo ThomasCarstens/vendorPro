@@ -6,8 +6,8 @@ const LoginScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Image source={require('../../assets/vendorprologo.webp')} style={styles.logo} />
       <View style={styles.titleContainer}>
-        <Text style={styles.appTitle}>VendorPro</Text>
-        <Text style={styles.appSlogan}>Towards autonomous vending machines</Text>
+        <Text style={styles.appTitle}>Merge</Text>
+        <Text style={styles.appSlogan}>Demo</Text>
       </View>
       <View style={styles.buttonContainer}>
         <View style={styles.verticalLine} />
@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
           style={styles.button}
           onPress={() => navigation.navigate('RestrainedTabs')}
         >
-          <Text style={styles.buttonTitle}>My Machines</Text>
+          <Text style={styles.buttonTitle}>Start</Text>
         </TouchableOpacity>
       </View>
     </View>
